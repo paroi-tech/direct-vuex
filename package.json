@@ -1,0 +1,37 @@
+{
+  "name": "direct-vuex",
+  "version": "0.0.1",
+  "description": "Just Vuex with typing.",
+  "author": "Paleo",
+  "main": "dist/direct-vuex.js",
+  "types": "types/index.d.ts",
+  "scripts": {
+    "prepublishOnly": "npm run build",
+    "clear": "rimraf 'dist/*'",
+    "tsc": "tsc",
+    "tsc:watch": "tsc --watch",
+    "build": "npm run clear && npm run tsc",
+    "lint": "tslint -p tsconfig.json -t verbose"
+  },
+  "peerDependencies": {
+    "vue": "*",
+    "vuex": "*"
+  },
+  "devDependencies": {
+    "rimraf": "^3.0.0",
+    "tslint": "^5.20.0",
+    "typescript": "^3.6.4",
+    "vue": "*",
+    "vuex": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paleo/direct-vuex.git"
+  },
+  "license": "CC0-1.0",
+  "keywords": [
+    "vuex",
+    "typing",
+    "typescript"
+  ]
+}

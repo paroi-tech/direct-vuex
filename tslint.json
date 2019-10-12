@@ -1,0 +1,73 @@
+{
+  "defaultSeverity": "warning",
+  "extends": [
+    "tslint:recommended"
+  ],
+  "jsRules": true,
+  "linterOptions": {
+    "exclude": [
+      "node_modules/**",
+      "jest.config.js"
+    ]
+  },
+  "rules": {
+    "arrow-parens": false,
+    "curly": false,
+    "eofline": false,
+    "indent": [
+      true,
+      "spaces",
+      2
+    ],
+    "interface-name": false,
+    "max-classes-per-file": false,
+    "max-line-length": false,
+    "member-access": [
+      true,
+      "no-public"
+    ],
+    "no-conditional-assignment": false,
+    "no-consecutive-blank-lines": false,
+    "no-console": false,
+    "no-empty": [
+      true,
+      "allow-empty-catch",
+      "allow-empty-functions"
+    ],
+    "no-shadowed-variable": false,
+    "no-string-literal": false,
+    "no-var-requires": false,
+    "ordered-imports": true,
+    "object-literal-sort-keys": false,
+    "object-literal-key-quotes": false,
+    "only-arrow-functions": false,
+    "prefer-const": true,
+    "quotemark": [
+      true,
+      "double"
+    ],
+    "semicolon": [
+      true,
+      "never"
+    ],
+    "space-before-function-paren": [
+      true,
+      {
+        "anonymous": "always",
+        "named": "never",
+        "asyncArrow": "always"
+      }
+    ],
+    "trailing-comma": [
+      true,
+      {
+        "singleline": "never"
+      }
+    ],
+    "variable-name": [
+      true,
+      "allow-leading-underscore",
+      "allow-pascal-case"
+    ]
+  }
+}

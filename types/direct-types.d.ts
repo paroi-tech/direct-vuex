@@ -1,5 +1,5 @@
 import { Store } from "vuex"
-import { ActionsImpl, GettersImpl, ModulesImpl, MutationsImpl, StoreOptions } from "./index"
+import { ActionsImpl, GettersImpl, ModulesImpl, MutationsImpl, StoreOptions, StoreOrModuleOptions } from "./index"
 
 export interface ToDirectStore<O extends StoreOptions> {
   original: Store<DirectState<O>>,
@@ -11,26 +11,26 @@ export interface ToDirectStore<O extends StoreOptions> {
 
 // State
 
-export type DirectState<O extends StoreOptions> = O["state"] & GetStateInModulesOrEmpty<O>
+export type DirectState<O extends StoreOrModuleOptions> = O["state"] & GetStateInModulesOrEmpty<O>
 
-export type GetStateInModulesOrEmpty<O extends StoreOptions> =
+export type GetStateInModulesOrEmpty<O extends StoreOrModuleOptions> =
   O["modules"] extends ModulesImpl ? GetStateInModules<O["modules"]> : {}
 
-export type GetStateInModules<MO extends ModulesImpl> = {
-  [M in keyof MO]: DirectState<MO[M]>
+export type GetStateInModules<I extends ModulesImpl> = {
+  [M in keyof I]: DirectState<I[M]>
 }
 
 // Getters
 
-export type DirectGetters<O extends StoreOptions> =
+export type DirectGetters<O extends StoreOrModuleOptions> =
   (O["getters"] extends GettersImpl ? ToDirectGetters<O["getters"]> : {})
   & GetGettersInModulesOrEmpty<O>
 
-export type GetGettersInModulesOrEmpty<O extends StoreOptions> =
+export type GetGettersInModulesOrEmpty<O extends StoreOrModuleOptions> =
   O["modules"] extends ModulesImpl ? GetGettersInModules<O["modules"]> : {}
 
-export type GetGettersInModules<MO extends ModulesImpl> = {
-  [M in keyof MO]: DirectGetters<MO[M]>
+export type GetGettersInModules<I extends ModulesImpl> = {
+  [M in keyof I]: DirectGetters<I[M]>
 }
 
 export type ToDirectGetters<T extends GettersImpl> = {
@@ -39,15 +39,15 @@ export type ToDirectGetters<T extends GettersImpl> = {
 
 // Mutations
 
-export type DirectMutations<O extends StoreOptions> =
+export type DirectMutations<O extends StoreOrModuleOptions> =
   (O["mutations"] extends MutationsImpl ? ToDirectMutations<O["mutations"]> : {})
   & GetMutationsInModulesOrEmpty<O>
 
-export type GetMutationsInModulesOrEmpty<O extends StoreOptions> =
+export type GetMutationsInModulesOrEmpty<O extends StoreOrModuleOptions> =
   O["modules"] extends ModulesImpl ? GetMutationsInModules<O["modules"]> : {}
 
-export type GetMutationsInModules<MO extends ModulesImpl> = {
-  [M in keyof MO]: DirectMutations<MO[M]>
+export type GetMutationsInModules<I extends ModulesImpl> = {
+  [M in keyof I]: DirectMutations<I[M]>
 }
 
 export type ToDirectMutations<T extends MutationsImpl> = {
@@ -58,15 +58,15 @@ export type ToDirectMutations<T extends MutationsImpl> = {
 
 // Actions
 
-export type DirectActions<O extends StoreOptions> =
+export type DirectActions<O extends StoreOrModuleOptions> =
   (O["actions"] extends ActionsImpl ? ToDirectActions<O["actions"]> : {})
   & GetActionsInModulesOrEmpty<O>
 
-export type GetActionsInModulesOrEmpty<O extends StoreOptions> =
+export type GetActionsInModulesOrEmpty<O extends StoreOrModuleOptions> =
   O["modules"] extends ModulesImpl ? GetActionsInModules<O["modules"]> : {}
 
-export type GetActionsInModules<MO extends ModulesImpl> = {
-  [M in keyof MO]: DirectActions<MO[M]>
+export type GetActionsInModules<I extends ModulesImpl> = {
+  [M in keyof I]: DirectActions<I[M]>
 }
 
 export type ToDirectActions<T extends ActionsImpl> = {

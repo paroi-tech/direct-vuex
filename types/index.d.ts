@@ -21,11 +21,11 @@ export function createDirectActions<T extends ActionsImpl>(
   hierarchy?: string[]
 ): ToDirectActions<T>
 
-/**
+/*
  * Types for Vuex Store Options
  */
-export interface StoreOptions {
-  strict?: boolean
+
+export interface StoreOrModuleOptions {
   state?: any,
   getters?: GettersImpl
   mutations?: MutationsImpl
@@ -34,10 +34,12 @@ export interface StoreOptions {
   plugins?: PluginImpl[]
 }
 
-export type ModuleOptions = Pick<StoreOptions,
-  "state" | "getters" | "mutations" | "actions" | "modules"
-> & {
-  namespaced: true
+export interface StoreOptions extends StoreOrModuleOptions {
+  strict?: boolean
+}
+
+export interface ModuleOptions extends StoreOrModuleOptions {
+  namespaced?: boolean
 }
 
 export interface ModulesImpl { [moduleName: string]: ModuleOptions }

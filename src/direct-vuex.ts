@@ -1,8 +1,11 @@
 import Vuex, { Store } from "vuex"
-import { ActionsImpl, GettersImpl, MutationsImpl, StoreOptions } from "../types"
+import { ActionsImpl, GettersImpl, ModulesImpl, MutationsImpl, StoreOptions, StoreOrModuleOptions } from "../types"
 import { DirectActions, DirectGetters, DirectMutations, ToDirectActions, ToDirectGetters, ToDirectMutations, ToDirectStore } from "../types/direct-types"
 
 export function createDirectStore<O extends StoreOptions>(options: O): ToDirectStore<O> {
+  if (options.modules)
+    checkNamespaced(options.modules)
+
   const original = new Vuex.Store(options)
 
   return {
@@ -14,7 +17,16 @@ export function createDirectStore<O extends StoreOptions>(options: O): ToDirectS
   }
 }
 
-function gettersFromOptions<O extends StoreOptions>(
+function checkNamespaced(modules: ModulesImpl) {
+  for (const [moduleName, moduleOptions] of Object.entries(modules)) {
+    if (!moduleOptions.namespaced)
+      throw new Error(`The Vuex module '${moduleName}' is not namespaced. Direct-vuex can only work with namespaced Vuex modules.`)
+    if (moduleOptions.modules)
+      checkNamespaced(moduleOptions.modules)
+  }
+}
+
+function gettersFromOptions<O extends StoreOrModuleOptions>(
   options: O,
   original: Store<any>,
   hierarchy: string[] = []
@@ -44,7 +56,7 @@ export function createDirectGetters<T extends GettersImpl>(
   return result
 }
 
-function commitFromOptions<O extends StoreOptions>(
+function commitFromOptions<O extends StoreOrModuleOptions>(
   options: O,
   original: Store<any>,
   hierarchy: string[] = []
@@ -70,7 +82,7 @@ export function createDirectMutations<T extends MutationsImpl>(
   return result
 }
 
-function dispatchFromOptions<O extends StoreOptions>(
+function dispatchFromOptions<O extends StoreOrModuleOptions>(
   options: O,
   original: Store<any>,
   hierarchy: string[] = []

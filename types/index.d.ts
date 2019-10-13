@@ -1,25 +1,6 @@
-import { Store } from "vuex"
-import { ToDirectActions, ToDirectGetters, ToDirectMutations, ToDirectStore } from "./direct-types"
+import { ToDirectStore } from "./direct-types"
 
 export function createDirectStore<O extends StoreOptions>(options: O): ToDirectStore<O>
-
-export function createDirectGetters<T extends GettersImpl>(
-  gettersImpl: T,
-  original: Store<any>,
-  hierarchy?: string[]
-): ToDirectGetters<T>
-
-export function createDirectMutations<T extends MutationsImpl>(
-  mutationsImpl: T,
-  original: Store<any>,
-  hierarchy?: string[]
-): ToDirectMutations<T>
-
-export function createDirectActions<T extends ActionsImpl>(
-  actionsImpl: T,
-  original: Store<any>,
-  hierarchy?: string[]
-): ToDirectActions<T>
 
 /*
  * Types for Vuex Store Options
@@ -39,7 +20,7 @@ export interface StoreOptions extends StoreOrModuleOptions {
 }
 
 export interface ModuleOptions extends StoreOrModuleOptions {
-  namespaced: true
+  namespaced?: boolean
 }
 
 export interface ModulesImpl { [moduleName: string]: ModuleOptions }

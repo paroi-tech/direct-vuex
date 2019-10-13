@@ -15,8 +15,7 @@ First, add `direct-vuex` to the Vue application:
 The store is implemented in the same way as usual. But it is necessary to add `as const` on the module options:
 
     export default {
-      namespaced: true,
-      // …
+      // … module implementation here …
     } as const
 
 Then, create the store:
@@ -28,7 +27,7 @@ Then, create the store:
     Vue.use(Vuex)
 
     export default createDirectStore({
-      // … store options here …
+      // … store implementation here …
     } as const)
 
 The classic Vuex store is still accessible through the `store.original` property. We need it to initialize the Vue application:
@@ -66,7 +65,6 @@ Notice: The underlying Vuex store can be used simultaneously if you wish, throug
 
 ## Limitations
 
-- Modules must be namespaced;
 - Actions can't be declared with the object alternative syntax.
 
 ## Contribute

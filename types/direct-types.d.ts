@@ -11,25 +11,22 @@ export interface ToDirectStore<O extends StoreOptions> {
 
 // State
 
-export type DirectState<O extends StoreOrModuleOptions> = O["state"] & GetStateInModulesOrEmpty<O>
+export type DirectState<O extends StoreOrModuleOptions> =
+  O["state"]
+  & GetStateInModules<OrEmpty<O["modules"]>>
 
-export type GetStateInModulesOrEmpty<O extends StoreOrModuleOptions> =
-  O["modules"] extends ModulesImpl ? GetStateInModules<O["modules"]> : {}
-
-export type GetStateInModules<I extends ModulesImpl> = {
+type GetStateInModules<I extends ModulesImpl> = {
   [M in keyof I]: DirectState<I[M]>
 }
 
 // Getters
 
 export type DirectGetters<O extends StoreOrModuleOptions> =
-  (O["getters"] extends GettersImpl ? ToDirectGetters<O["getters"]> : {})
-  & GetGettersInModulesOrEmpty<O>
+  ToDirectGetters<OrEmpty<O["getters"]>>
+  & GetGettersInModules<FilterNamespaced<OrEmpty<O["modules"]>>>
+  & FlattenGetters<FilterNotNamespaced<OrEmpty<O["modules"]>>>
 
-export type GetGettersInModulesOrEmpty<O extends StoreOrModuleOptions> =
-  O["modules"] extends ModulesImpl ? GetGettersInModules<O["modules"]> : {}
-
-export type GetGettersInModules<I extends ModulesImpl> = {
+type GetGettersInModules<I extends ModulesImpl> = {
   [M in keyof I]: DirectGetters<I[M]>
 }
 
@@ -37,16 +34,16 @@ export type ToDirectGetters<T extends GettersImpl> = {
   [K in keyof T]: ReturnType<T[K]>
 }
 
+type FlattenGetters<I extends ModulesImpl> = UnionToIntersection<I[keyof I]["getters"]>
+
 // Mutations
 
 export type DirectMutations<O extends StoreOrModuleOptions> =
-  (O["mutations"] extends MutationsImpl ? ToDirectMutations<O["mutations"]> : {})
-  & GetMutationsInModulesOrEmpty<O>
+  ToDirectMutations<OrEmpty<O["mutations"]>>
+  & GetMutationsInModules<FilterNamespaced<OrEmpty<O["modules"]>>>
+  & FlattenMutations<FilterNotNamespaced<OrEmpty<O["modules"]>>>
 
-export type GetMutationsInModulesOrEmpty<O extends StoreOrModuleOptions> =
-  O["modules"] extends ModulesImpl ? GetMutationsInModules<O["modules"]> : {}
-
-export type GetMutationsInModules<I extends ModulesImpl> = {
+type GetMutationsInModules<I extends ModulesImpl> = {
   [M in keyof I]: DirectMutations<I[M]>
 }
 
@@ -56,16 +53,16 @@ export type ToDirectMutations<T extends MutationsImpl> = {
   : ((payload: Parameters<T[K]>[1]) => void)
 }
 
+type FlattenMutations<I extends ModulesImpl> = UnionToIntersection<I[keyof I]["mutations"]>
+
 // Actions
 
 export type DirectActions<O extends StoreOrModuleOptions> =
-  (O["actions"] extends ActionsImpl ? ToDirectActions<O["actions"]> : {})
-  & GetActionsInModulesOrEmpty<O>
+  ToDirectActions<OrEmpty<O["actions"]>>
+  & GetActionsInModules<FilterNamespaced<OrEmpty<O["modules"]>>>
+  & FlattenActions<FilterNotNamespaced<OrEmpty<O["modules"]>>>
 
-export type GetActionsInModulesOrEmpty<O extends StoreOrModuleOptions> =
-  O["modules"] extends ModulesImpl ? GetActionsInModules<O["modules"]> : {}
-
-export type GetActionsInModules<I extends ModulesImpl> = {
+type GetActionsInModules<I extends ModulesImpl> = {
   [M in keyof I]: DirectActions<I[M]>
 }
 
@@ -74,3 +71,18 @@ export type ToDirectActions<T extends ActionsImpl> = {
   ? (() => ReturnType<T[K]>)
   : ((payload: Parameters<T[K]>[1]) => ReturnType<T[K]>)
 }
+
+type FlattenActions<I extends ModulesImpl> = UnionToIntersection<I[keyof I]["actions"]>
+
+// Common helpers
+
+type FilterNamespaced<I extends ModulesImpl> = Pick<I, KeyOfType<I, { namespaced: true }>>
+
+type FilterNotNamespaced<I extends ModulesImpl> = Pick<I, KeyOfType<I, { namespaced?: false }>>
+
+type KeyOfType<T, U> = { [P in keyof T]: T[P] extends U ? P : never }[keyof T]
+
+type OrEmpty<T> = T extends {} ? T : {}
+
+type UnionToIntersection<U> =
+  (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never

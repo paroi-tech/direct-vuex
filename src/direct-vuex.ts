@@ -1,51 +1,47 @@
 import Vuex, { Store } from "vuex"
-import { ActionsImpl, GettersImpl, ModulesImpl, MutationsImpl, StoreOptions, StoreOrModuleOptions } from "../types"
-import { DirectActions, DirectGetters, DirectMutations, ToDirectActions, ToDirectGetters, ToDirectMutations, ToDirectStore } from "../types/direct-types"
+import { ActionsImpl, GettersImpl, MutationsImpl, StoreOptions, StoreOrModuleOptions } from "../types"
+import { ToDirectStore } from "../types/direct-types"
 
 export function createDirectStore<O extends StoreOptions>(options: O): ToDirectStore<O> {
-  if (options.modules)
-    checkNamespaced(options.modules)
-
   const original = new Vuex.Store(options)
 
   return {
     original,
     state: original.state,
-    commit: commitFromOptions(options, original),
-    dispatch: dispatchFromOptions(options, original),
-    getters: gettersFromOptions(options, original)
+    getters: directGettersFromOptions({}, options, original),
+    commit: commitFromOptions({}, options, original),
+    dispatch: dispatchFromOptions({}, options, original)
   }
 }
 
-function checkNamespaced(modules: ModulesImpl) {
-  for (const [moduleName, moduleOptions] of Object.entries(modules)) {
-    if (!moduleOptions.namespaced)
-      throw new Error(`The Vuex module '${moduleName}' is not namespaced. Direct-vuex can only work with namespaced Vuex modules.`)
-    if (moduleOptions.modules)
-      checkNamespaced(moduleOptions.modules)
-  }
-}
+// Getters
 
-function gettersFromOptions<O extends StoreOrModuleOptions>(
-  options: O,
+function directGettersFromOptions(
+  result: any,
+  options: StoreOrModuleOptions,
   original: Store<any>,
   hierarchy: string[] = []
-): DirectGetters<O> {
-  const result = options.getters ? createDirectGetters(options.getters, original, hierarchy) : {}
+): any {
+  if (options.getters)
+    createDirectGetters(result, options.getters, original, hierarchy)
   if (options.modules) {
-    for (const [moduleName, moduleOptions] of Object.entries(options.modules))
-      result[moduleName] = gettersFromOptions(moduleOptions, original, [...hierarchy, moduleName])
+    for (const [moduleName, moduleOptions] of Object.entries(options.modules)) {
+      if (moduleOptions.namespaced)
+        result[moduleName] = directGettersFromOptions({}, moduleOptions, original, [...hierarchy, moduleName])
+      else
+        directGettersFromOptions(result, moduleOptions, original, hierarchy)
+    }
   }
-  return result as DirectGetters<O>
+  return result
 }
 
-export function createDirectGetters<T extends GettersImpl>(
-  gettersImpl: T,
+function createDirectGetters(
+  result: any,
+  gettersImpl: GettersImpl,
   original: Store<any>,
   hierarchy?: string[]
-): ToDirectGetters<T> {
+) {
   const prefix = !hierarchy || hierarchy.length === 0 ? "" : `${hierarchy.join("/")}/`
-  const result = {} as ToDirectGetters<any>
   for (const name of Object.keys(gettersImpl)) {
     Object.defineProperties(result, {
       [name]: {
@@ -53,57 +49,68 @@ export function createDirectGetters<T extends GettersImpl>(
       }
     })
   }
-  return result
 }
 
-function commitFromOptions<O extends StoreOrModuleOptions>(
-  options: O,
+// Mutations
+
+function commitFromOptions(
+  result: any,
+  options: StoreOrModuleOptions,
   original: Store<any>,
   hierarchy: string[] = []
-): DirectMutations<O> {
-  const result: any = options.mutations ? createDirectMutations(options.mutations, original, hierarchy) : {}
+): any {
+  if (options.mutations)
+    createDirectMutations(result, options.mutations, original, hierarchy)
   if (options.modules) {
-    for (const [moduleName, moduleOptions] of Object.entries(options.modules))
-      result[moduleName] = commitFromOptions(moduleOptions, original, [...hierarchy, moduleName])
+    for (const [moduleName, moduleOptions] of Object.entries(options.modules)) {
+      if (moduleOptions.namespaced)
+        result[moduleName] = commitFromOptions({}, moduleOptions, original, [...hierarchy, moduleName])
+      else
+        commitFromOptions(result, moduleOptions, original, hierarchy)
+    }
   }
   return result
 }
 
-export function createDirectMutations<T extends MutationsImpl>(
-  mutationsImpl: T,
+function createDirectMutations(
+  result: any,
+  mutationsImpl: MutationsImpl,
   original: Store<any>,
   hierarchy?: string[]
-): ToDirectMutations<T> {
+) {
   const prefix = !hierarchy || hierarchy.length === 0 ? "" : `${hierarchy.join("/")}/`
-  const result = {} as ToDirectMutations<any>
-  for (const name of Object.keys(mutationsImpl)) {
+  for (const name of Object.keys(mutationsImpl))
     result[name] = (payload: any) => original.commit(`${prefix}${name}`, payload)
-  }
-  return result
 }
 
-function dispatchFromOptions<O extends StoreOrModuleOptions>(
-  options: O,
+// Actions
+
+function dispatchFromOptions(
+  result: any,
+  options: StoreOrModuleOptions,
   original: Store<any>,
   hierarchy: string[] = []
-): DirectActions<O> {
-  const result: any = options.actions ? createDirectActions(options.actions, original, hierarchy) : {}
+): any {
+  if (options.actions)
+    createDirectActions(result, options.actions, original, hierarchy)
   if (options.modules) {
-    for (const [moduleName, moduleOptions] of Object.entries(options.modules))
-      result[moduleName] = dispatchFromOptions(moduleOptions, original, [...hierarchy, moduleName])
+    for (const [moduleName, moduleOptions] of Object.entries(options.modules)) {
+      if (moduleOptions.namespaced)
+        result[moduleName] = dispatchFromOptions({}, moduleOptions, original, [...hierarchy, moduleName])
+      else
+        dispatchFromOptions(result, moduleOptions, original, hierarchy)
+    }
   }
   return result
 }
 
-export function createDirectActions<T extends ActionsImpl>(
-  actionsImpl: T,
+function createDirectActions(
+  result: any,
+  actionsImpl: ActionsImpl,
   original: Store<any>,
   hierarchy?: string[]
-): ToDirectActions<T> {
+) {
   const prefix = !hierarchy || hierarchy.length === 0 ? "" : `${hierarchy.join("/")}/`
-  const result = {} as ToDirectActions<any>
-  for (const name of Object.keys(actionsImpl)) {
+  for (const name of Object.keys(actionsImpl))
     result[name] = (payload?: any) => original.dispatch(`${prefix}${name}`, payload)
-  }
-  return result
 }

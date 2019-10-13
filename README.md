@@ -62,7 +62,7 @@ Typed getters and mutations are accessible the same way:
     store.getters.myModule.myGetter;
     store.commit.myModule.myMutation(myPayload);
 
-Notice: The underlying Vuex store wan be simultaneously used if you wish, through the injected `this.$store` or `store.original`.
+Notice: The underlying Vuex store can be used simultaneously if you wish, through the injected `this.$store` or `store.original`.
 
 ## Limitations
 

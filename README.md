@@ -6,11 +6,18 @@ Just Vuex with typing.
 
 ### Install
 
-First, install `direct-vuex`:
+First, add `direct-vuex` to the Vue application:
 
-    npm install vue vuex direct-vuex
+    npm install direct-vuex
 
 ### Create the store
+
+The store is implemented in the same way as usual. But it is necessary to add `as const` on the module options:
+
+    export default {
+      namespaced: true,
+      // …
+    } as const
 
 Then, create the store:
 
@@ -24,37 +31,42 @@ Then, create the store:
       // … store options here …
     } as const)
 
-The original Vuex store is still accessible through `store.original`:
+The classic Vuex store is still accessible through the `store.original` property. We need it to initialize the Vue application:
 
     import Vue from "vue"
     import store from "./store"
 
     new Vue({
-      // …
-      store: store.original,
+      store: store.original, // Inject the classic Vuex store
       // …
     }).$mount("#app")
 
-### Use the direct store
+### Use the direct store from Vue components
 
 From a component, import the store.
 
     import store from "./store"
 
-Then, the following line:
-
-    store.dispatch.myModule.myAction(myPayload)
-
-… replaces the old one:
+Then, the old way to call an action:
 
     store.dispatch("myModule/myAction", myPayload)
 
-Notice: It is still possible to use the injected `this.$store`, which is the original Vuex store.
+… is replaced by the following wrapper:
+
+    store.dispatch.myModule.myAction(myPayload)
+
+… which is fully typed.
+
+Typed getters and mutations are accessible the same way:
+
+    store.getters.myModule.myGetter;
+    store.commit.myModule.myMutation(myPayload);
+
+Notice: The underlying Vuex store wan be simultaneously used if you wish, through the injected `this.$store` or `store.original`.
 
 ## Limitations
 
 - Modules must be namespaced;
-- Actions must return a `Promise`;
 - Actions can't be declared with the object alternative syntax.
 
 ## Contribute

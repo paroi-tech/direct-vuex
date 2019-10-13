@@ -1,6 +1,6 @@
 # direct-vuex
 
-Just Vuex with typing.
+Just Vuex with typing. Compatible with the Vue 3 composition API.
 
 ## How to use
 

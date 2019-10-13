@@ -52,8 +52,8 @@ export type GetMutationsInModules<I extends ModulesImpl> = {
 
 export type ToDirectMutations<T extends MutationsImpl> = {
   [K in keyof T]: Parameters<T[K]>[1] extends undefined
-  ? (() => ReturnType<T[K]>)
-  : ((payload: Parameters<T[K]>[1]) => ReturnType<T[K]>)
+  ? (() => void)
+  : ((payload: Parameters<T[K]>[1]) => void)
 }
 
 // Actions

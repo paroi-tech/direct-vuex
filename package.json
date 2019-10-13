@@ -1,6 +1,6 @@
 {
   "name": "direct-vuex",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Just Vuex with typing.",
   "author": "Paleo",
   "main": "dist/direct-vuex.js",

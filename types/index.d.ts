@@ -39,7 +39,7 @@ export interface StoreOptions extends StoreOrModuleOptions {
 }
 
 export interface ModuleOptions extends StoreOrModuleOptions {
-  namespaced?: boolean
+  namespaced: true
 }
 
 export interface ModulesImpl { [moduleName: string]: ModuleOptions }
@@ -54,7 +54,7 @@ export interface MutationsImpl {
   [name: string]: MutationImpl
 }
 
-export type MutationImpl = (state: any, payload: any) => any
+export type MutationImpl = (state: any, payload: any) => void
 
 export interface ActionsImpl {
   [name: string]: ActionImpl

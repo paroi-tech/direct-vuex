@@ -22,17 +22,18 @@ Then, create the store:
 
     export default createDirectStore({
       // … store options here …
-    })
+    } as const)
 
 The original Vuex store is still accessible through `store.original`:
 
+    import Vue from "vue"
     import store from "./store"
 
     new Vue({
       // …
       store: store.original,
       // …
-    }).$mount("#app");
+    }).$mount("#app")
 
 ### Use the direct store
 

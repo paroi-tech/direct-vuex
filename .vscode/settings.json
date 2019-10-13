@@ -16,25 +16,6 @@
   "files.encoding": "utf8",
   "files.trimTrailingWhitespace": true,
   "search.useIgnoreFiles": true,
-  "todo-tree.highlights.customHighlight": {
-    "TODO": {
-      "icon": "check",
-      "iconColour": "#cc4"
-    },
-    "FIXME": {
-      "background": "#fa4",
-      "opacity": 60,
-      "iconColour": "#f5a542"
-    }
-  },
-  "todo-tree.highlights.defaultHighlight": {
-    "icon": "alert",
-    "type": "text",
-    "foreground": "#632",
-    "background": "#dd8",
-    "opacity": 50
-  },
-  "todo-tree.highlights.highlightDelay": 50,
   "tslint.configFile": "tslint.json",
   "typescript.locale": "en",
   "typescript.preferences.importModuleSpecifier": "relative",

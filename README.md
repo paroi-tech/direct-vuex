@@ -73,5 +73,4 @@ Notice: The underlying Vuex store can be used simultaneously if you wish, throug
 
 With VS Code, our recommanded plugins are:
 
-- **Todo Tree** from Gruntfuggly (`gruntfuggly.todo-tree`)
 - **TSLint** from Microsoft (`ms-vscode.vscode-typescript-tslint-plugin`)

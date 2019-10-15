@@ -68,13 +68,15 @@ type GetActionsInModules<I extends ModulesImpl> = {
 
 export type ToDirectActions<T extends ActionsImpl> = {
   [K in keyof T]: Parameters<T[K]>[1] extends undefined
-  ? (() => ReturnType<T[K]>)
-  : ((payload: Parameters<T[K]>[1]) => ReturnType<T[K]>)
+  ? (() => PromiseOf<ReturnType<T[K]>>)
+  : ((payload: Parameters<T[K]>[1]) => PromiseOf<ReturnType<T[K]>>)
 }
 
 type FlattenActions<I extends ModulesImpl> = UnionToIntersection<I[keyof I]["actions"]>
 
 // Common helpers
+
+type PromiseOf<T> = T extends Promise<any> ? T : Promise<T>
 
 type FilterNamespaced<I extends ModulesImpl> = Pick<I, KeyOfType<I, { namespaced: true }>>
 

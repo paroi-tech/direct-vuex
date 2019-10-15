@@ -41,6 +41,6 @@ export interface ActionsImpl {
   [name: string]: ActionImpl
 }
 
-export type ActionImpl = (context: any, payload: any) => Promise<any>
+export type ActionImpl = (context: any, payload: any) => any
 
 export type PluginImpl = (store: any) => any

@@ -6,17 +6,15 @@ Just Vuex with typing. Compatible with the Vue 3 composition API.
 
 ### Install
 
-First, add `direct-vuex` to the Vue application:
+First, add `direct-vuex` to a Vue application:
 
     npm install direct-vuex
 
 ### Create the store
 
-The store is implemented in the same way as usual. But it is necessary to add `as const` on the module options:
+The store is implemented in the same way as usual (ie. without typing).
 
-    export default {
-      // … module implementation here …
-    } as const
+A minor details anyway: It is necessary to append `as const` at the end of store and module implementation objects. It will help direct-vuex to better infer types.
 
 Then, create the store:
 
@@ -40,7 +38,7 @@ The classic Vuex store is still accessible through the `store.original` property
       // …
     }).$mount("#app")
 
-### Use the direct store from Vue components
+### Use typed wrappers from outside the store
 
 From a component, import the store.
 
@@ -69,6 +67,6 @@ Notice: The underlying Vuex store can be used simultaneously if you wish, throug
 
 ## Contribute
 
-With VS Code, our recommanded plugins are:
+With VS Code, our recommanded plugin is:
 
 - **TSLint** from Microsoft (`ms-vscode.vscode-typescript-tslint-plugin`)

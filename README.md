@@ -12,11 +12,9 @@ First, add `direct-vuex` to a Vue application:
 
 ### Create the store
 
-The store is implemented in the same way as usual (ie. without typing).
+The store is implemented in the same way as usual (ie. without typing). However, it is necessary to append `as const` at the end of store and module implementation objects. It will help direct-vuex to better infer types.
 
-A minor detail anyway: It is necessary to append `as const` at the end of store and module implementation objects. It will help direct-vuex to better infer types.
-
-Then, create the store:
+Create the store:
 
     import Vue from "vue"
     import Vuex from "vuex"

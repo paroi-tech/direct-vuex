@@ -14,7 +14,7 @@ First, add `direct-vuex` to a Vue application:
 
 The store is implemented in the same way as usual (ie. without typing).
 
-A minor details anyway: It is necessary to append `as const` at the end of store and module implementation objects. It will help direct-vuex to better infer types.
+A minor detail anyway: It is necessary to append `as const` at the end of store and module implementation objects. It will help direct-vuex to better infer types.
 
 Then, create the store:
 

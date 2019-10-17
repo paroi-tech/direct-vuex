@@ -1,13 +1,13 @@
 import { Store } from "vuex"
 import { ActionsImpl, GettersImpl, ModulesImpl, MutationsImpl, StoreOptions, StoreOrModuleOptions } from "./index"
 
-export interface ToDirectStore<O extends StoreOptions> {
+export type ToDirectStore<O extends StoreOptions> = ToFlatStore<{
   original: Store<DirectState<O>>,
   state: DirectState<O>
   getters: DirectGetters<O>
   commit: DirectMutations<O>
   dispatch: DirectActions<O>
-}
+}>
 
 // State
 
@@ -88,3 +88,9 @@ type OrEmpty<T> = T extends {} ? T : {}
 
 type UnionToIntersection<U> =
   (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never
+
+type ToFlatStore<T> =
+  T extends Store<any> | Function ? T :
+  T extends object ?
+  T extends infer O ? { [K in keyof O]: ToFlatStore<O[K]> } : never
+  : T

@@ -3,7 +3,7 @@ import { ActionsImpl, GettersImpl, ModulesImpl, MutationsImpl, StoreOptions, Sto
 
 export type ToDirectStore<O extends StoreOptions> = ToFlatStore<{
   original: Store<DirectState<O>>,
-  state: DirectState<O>
+  readonly state: DirectState<O>
   getters: DirectGetters<O>
   commit: DirectMutations<O>
   dispatch: DirectActions<O>

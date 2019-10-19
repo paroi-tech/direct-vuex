@@ -7,7 +7,9 @@ export function createDirectStore<O extends StoreOptions>(options: O): ToDirectS
 
   return {
     original,
-    state: original.state,
+    get state() {
+      return original.state
+    },
     getters: directGettersFromOptions({}, options, original),
     commit: commitFromOptions({}, options, original),
     dispatch: dispatchFromOptions({}, options, original)

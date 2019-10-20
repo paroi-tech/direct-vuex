@@ -19,7 +19,7 @@ type GetStateInModules<I extends ModulesImpl> = {
   [M in keyof I]: DirectState<I[M]>
 }
 
-type ToStateObj<T> = T extends () => any ? ReturnType<T> : T;
+type ToStateObj<T> = T extends (() => any) ? ReturnType<T> : T;
 
 // Getters
 

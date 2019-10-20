@@ -11,17 +11,19 @@ export type ToDirectStore<O extends StoreOptions> = ToFlatStore<{
 
 // State
 
-export type DirectState<O extends StoreOrModuleOptions> =
-  O["state"]
+type DirectState<O extends StoreOrModuleOptions> =
+  ToStateObj<O["state"]>
   & GetStateInModules<OrEmpty<O["modules"]>>
 
 type GetStateInModules<I extends ModulesImpl> = {
   [M in keyof I]: DirectState<I[M]>
 }
 
+type ToStateObj<T> = T extends () => any ? ReturnType<T> : T;
+
 // Getters
 
-export type DirectGetters<O extends StoreOrModuleOptions> =
+type DirectGetters<O extends StoreOrModuleOptions> =
   ToDirectGetters<OrEmpty<O["getters"]>>
   & GetGettersInModules<FilterNamespaced<OrEmpty<O["modules"]>>>
   & FlattenGetters<FilterNotNamespaced<OrEmpty<O["modules"]>>>
@@ -30,7 +32,7 @@ type GetGettersInModules<I extends ModulesImpl> = {
   [M in keyof I]: DirectGetters<I[M]>
 }
 
-export type ToDirectGetters<T extends GettersImpl> = {
+type ToDirectGetters<T extends GettersImpl> = {
   [K in keyof T]: ReturnType<T[K]>
 }
 
@@ -38,7 +40,7 @@ type FlattenGetters<I extends ModulesImpl> = UnionToIntersection<I[keyof I]["get
 
 // Mutations
 
-export type DirectMutations<O extends StoreOrModuleOptions> =
+type DirectMutations<O extends StoreOrModuleOptions> =
   ToDirectMutations<OrEmpty<O["mutations"]>>
   & GetMutationsInModules<FilterNamespaced<OrEmpty<O["modules"]>>>
   & FlattenMutations<FilterNotNamespaced<OrEmpty<O["modules"]>>>
@@ -47,7 +49,7 @@ type GetMutationsInModules<I extends ModulesImpl> = {
   [M in keyof I]: DirectMutations<I[M]>
 }
 
-export type ToDirectMutations<T extends MutationsImpl> = {
+type ToDirectMutations<T extends MutationsImpl> = {
   [K in keyof T]: Parameters<T[K]>[1] extends undefined
   ? (() => void)
   : ((payload: Parameters<T[K]>[1]) => void)
@@ -57,7 +59,7 @@ type FlattenMutations<I extends ModulesImpl> = UnionToIntersection<I[keyof I]["m
 
 // Actions
 
-export type DirectActions<O extends StoreOrModuleOptions> =
+type DirectActions<O extends StoreOrModuleOptions> =
   ToDirectActions<OrEmpty<O["actions"]>>
   & GetActionsInModules<FilterNamespaced<OrEmpty<O["modules"]>>>
   & FlattenActions<FilterNotNamespaced<OrEmpty<O["modules"]>>>
@@ -66,7 +68,7 @@ type GetActionsInModules<I extends ModulesImpl> = {
   [M in keyof I]: DirectActions<I[M]>
 }
 
-export type ToDirectActions<T extends ActionsImpl> = {
+type ToDirectActions<T extends ActionsImpl> = {
   [K in keyof T]: Parameters<T[K]>[1] extends undefined
   ? (() => PromiseOf<ReturnType<T[K]>>)
   : ((payload: Parameters<T[K]>[1]) => PromiseOf<ReturnType<T[K]>>)

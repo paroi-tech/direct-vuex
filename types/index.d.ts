@@ -7,7 +7,7 @@ export function createDirectStore<O extends StoreOptions>(options: O): ToDirectS
  */
 
 export interface StoreOrModuleOptions {
-  state?: any,
+  state?: (() => any) | any,
   getters?: GettersImpl
   mutations?: MutationsImpl
   actions?: ActionsImpl

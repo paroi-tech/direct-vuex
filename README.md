@@ -22,9 +22,18 @@ Create the store:
 
     Vue.use(Vuex)
 
-    export default createDirectStore({
+    const store = createDirectStore({
       // … store implementation here …
     } as const)
+
+    export default store
+    export type AppStore = typeof store
+
+    declare module "vuex" {
+      interface Store<S> {
+        direct: AppStore
+      }
+    }
 
 The classic Vuex store is still accessible through the `store.original` property. We need it to initialize the Vue application:
 
@@ -38,7 +47,11 @@ The classic Vuex store is still accessible through the `store.original` property
 
 ### Use typed wrappers from outside the store
 
-From a component, import the store.
+From a component, the direct store is accessible through the `direct` property of the classic store:
+
+    const store = this.$store.direct
+
+Or, you can just import it:
 
     import store from "./store"
 
@@ -54,8 +67,8 @@ Then, the old way to call an action:
 
 Typed getters and mutations are accessible the same way:
 
-    store.getters.myModule.myGetter;
-    store.commit.myModule.myMutation(myPayload);
+    store.getters.myModule.myGetter
+    store.commit.myModule.myMutation(myPayload)
 
 Notice: The underlying Vuex store can be used simultaneously if you wish, through the injected `this.$store` or `store.original`.
 

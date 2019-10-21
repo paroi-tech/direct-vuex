@@ -2,12 +2,16 @@ import { Store } from "vuex"
 import { ActionsImpl, GettersImpl, ModulesImpl, MutationsImpl, StoreOptions, StoreOrModuleOptions } from "./index"
 
 export type ToDirectStore<O extends StoreOptions> = ToFlatStore<{
-  original: Store<DirectState<O>>,
   readonly state: DirectState<O>
   getters: DirectGetters<O>
   commit: DirectMutations<O>
   dispatch: DirectActions<O>
+  original: VuexStore<O>
 }>
+
+export type VuexStore<O extends StoreOptions> = Store<ToFlatStore<DirectState<O>>> & {
+  direct: ToDirectStore<O>
+}
 
 // State
 
@@ -19,7 +23,7 @@ type GetStateInModules<I extends ModulesImpl> = {
   [M in keyof I]: DirectState<I[M]>
 }
 
-type ToStateObj<T> = T extends (() => any) ? ReturnType<T> : T;
+type ToStateObj<T> = T extends (() => any) ? ReturnType<T> : T
 
 // Getters
 

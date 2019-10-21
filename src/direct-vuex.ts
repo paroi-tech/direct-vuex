@@ -1,19 +1,22 @@
 import Vuex, { Store } from "vuex"
 import { ActionsImpl, GettersImpl, MutationsImpl, StoreOptions, StoreOrModuleOptions } from "../types"
-import { ToDirectStore } from "../types/direct-types"
+import { ToDirectStore, VuexStore } from "../types/direct-types"
 
 export function createDirectStore<O extends StoreOptions>(options: O): ToDirectStore<O> {
-  const original = new Vuex.Store(options)
+  const original = new Vuex.Store(options) as VuexStore<O>
 
-  return {
-    original,
+  const direct = {
     get state() {
       return original.state
     },
     getters: directGettersFromOptions({}, options, original),
     commit: commitFromOptions({}, options, original),
-    dispatch: dispatchFromOptions({}, options, original)
+    dispatch: dispatchFromOptions({}, options, original),
+    original
   }
+
+  original.direct = direct
+  return direct
 }
 
 // Getters

@@ -2,8 +2,6 @@
 
 Just Vuex with typing. Compatible with the Vue 3 composition API.
 
-Notice: Direct-vuex provides typed wrappers for the code that _uses_ the store. Not for the implementation of the store itself.
-
 ## How to use
 
 ### Install
@@ -73,6 +71,25 @@ Typed getters and mutations are accessible the same way:
     store.commit.myModule.myMutation(myPayload)
 
 Notice: The underlying Vuex store can be used simultaneously if you wish, through the injected `this.$store` or `store.original`.
+
+### Use typed wrappers from action implementations
+
+In the file where the store is created, add this line:
+
+    export const directActionContext = store.directActionContext;
+
+Here is an example on how to do in a module:
+
+    import { directActionContext } from "./store"
+    const myModule = {
+      actions: {
+        async myAction(context, payload) {
+          const { commit, state } = directActionContext(myModule, context)
+          // … Here, 'commit' and 'state' are typed.
+        }
+      }
+    }
+    export default myModule
 
 ## Contribute
 

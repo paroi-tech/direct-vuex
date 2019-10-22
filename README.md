@@ -2,6 +2,8 @@
 
 Just Vuex with typing. Compatible with the Vue 3 composition API.
 
+Notice: Direct-vuex provides typed wrappers for the code that _uses_ the store. Not for the implementation of the store itself.
+
 ## How to use
 
 ### Install
@@ -12,7 +14,7 @@ First, add `direct-vuex` to a Vue application:
 
 ### Create the store
 
-The store is implemented in the same way as usual (ie. without typing). However, it is necessary to append `as const` at the end of store and module implementation objects. It will help direct-vuex to better infer types.
+The store is implemented almost in the same way as usual (ie. without typing). However, **it is necessary to append `as const` at the end of store and module implementation objects**. It will help direct-vuex to better infer types.
 
 Create the store:
 
@@ -71,10 +73,6 @@ Typed getters and mutations are accessible the same way:
     store.commit.myModule.myMutation(myPayload)
 
 Notice: The underlying Vuex store can be used simultaneously if you wish, through the injected `this.$store` or `store.original`.
-
-## Limitations
-
-- Actions can't be declared with the object alternative syntax.
 
 ## Contribute
 

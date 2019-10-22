@@ -1,18 +1,19 @@
-import Vuex, { Store } from "vuex"
+import Vuex, { ActionContext, Commit, Dispatch, Store } from "vuex"
 import { ActionsImpl, GettersImpl, MutationsImpl, StoreOptions, StoreOrModuleOptions } from "../types"
-import { ToDirectStore, VuexStore } from "../types/direct-types"
+import { DirectActionContext, ToDirectStore, VuexStore } from "../types/direct-types"
 
 export function createDirectStore<O extends StoreOptions>(options: O): ToDirectStore<O> {
   const original = new Vuex.Store(options) as VuexStore<O>
 
-  const direct = {
+  const direct: ToDirectStore<O> = {
     get state() {
       return original.state
     },
-    getters: directGettersFromOptions({}, options, original),
-    commit: commitFromOptions({}, options, original),
-    dispatch: dispatchFromOptions({}, options, original),
-    original
+    getters: gettersFromOptions({}, options, original.getters),
+    commit: commitFromOptions({}, options, original.commit),
+    dispatch: dispatchFromOptions({}, options, original.dispatch),
+    original,
+    directActionContext: actionContextProvider(options)
   }
 
   original.direct = direct
@@ -21,20 +22,20 @@ export function createDirectStore<O extends StoreOptions>(options: O): ToDirectS
 
 // Getters
 
-function directGettersFromOptions(
+function gettersFromOptions(
   result: any,
   options: StoreOrModuleOptions,
-  original: Store<any>,
+  originalGetters: Store<any>["getters"],
   hierarchy: string[] = []
 ): any {
   if (options.getters)
-    createDirectGetters(result, options.getters, original, hierarchy)
+    createDirectGetters(result, options.getters, originalGetters, hierarchy)
   if (options.modules) {
     for (const [moduleName, moduleOptions] of Object.entries(options.modules)) {
       if (moduleOptions.namespaced)
-        result[moduleName] = directGettersFromOptions({}, moduleOptions, original, [...hierarchy, moduleName])
+        result[moduleName] = gettersFromOptions({}, moduleOptions, originalGetters, [...hierarchy, moduleName])
       else
-        directGettersFromOptions(result, moduleOptions, original, hierarchy)
+        gettersFromOptions(result, moduleOptions, originalGetters, hierarchy)
     }
   }
   return result
@@ -43,14 +44,14 @@ function directGettersFromOptions(
 function createDirectGetters(
   result: any,
   gettersImpl: GettersImpl,
-  original: Store<any>,
+  originalGetters: Store<any>["getters"],
   hierarchy?: string[]
 ) {
   const prefix = !hierarchy || hierarchy.length === 0 ? "" : `${hierarchy.join("/")}/`
   for (const name of Object.keys(gettersImpl)) {
     Object.defineProperties(result, {
       [name]: {
-        get: () => original.getters[`${prefix}${name}`]
+        get: () => originalGetters[`${prefix}${name}`]
       }
     })
   }
@@ -61,17 +62,17 @@ function createDirectGetters(
 function commitFromOptions(
   result: any,
   options: StoreOrModuleOptions,
-  original: Store<any>,
+  originalCommit: Store<any>["commit"],
   hierarchy: string[] = []
 ): any {
   if (options.mutations)
-    createDirectMutations(result, options.mutations, original, hierarchy)
+    createDirectMutations(result, options.mutations, originalCommit, hierarchy)
   if (options.modules) {
     for (const [moduleName, moduleOptions] of Object.entries(options.modules)) {
       if (moduleOptions.namespaced)
-        result[moduleName] = commitFromOptions({}, moduleOptions, original, [...hierarchy, moduleName])
+        result[moduleName] = commitFromOptions({}, moduleOptions, originalCommit, [...hierarchy, moduleName])
       else
-        commitFromOptions(result, moduleOptions, original, hierarchy)
+        commitFromOptions(result, moduleOptions, originalCommit, hierarchy)
     }
   }
   return result
@@ -80,12 +81,12 @@ function commitFromOptions(
 function createDirectMutations(
   result: any,
   mutationsImpl: MutationsImpl,
-  original: Store<any>,
+  originalCommit: Store<any>["commit"],
   hierarchy?: string[]
 ) {
   const prefix = !hierarchy || hierarchy.length === 0 ? "" : `${hierarchy.join("/")}/`
   for (const name of Object.keys(mutationsImpl))
-    result[name] = (payload: any) => original.commit(`${prefix}${name}`, payload)
+    result[name] = (payload: any) => originalCommit(`${prefix}${name}`, payload)
 }
 
 // Actions
@@ -93,17 +94,17 @@ function createDirectMutations(
 function dispatchFromOptions(
   result: any,
   options: StoreOrModuleOptions,
-  original: Store<any>,
+  originalDispatch: Store<any>["dispatch"],
   hierarchy: string[] = []
 ): any {
   if (options.actions)
-    createDirectActions(result, options.actions, original, hierarchy)
+    createDirectActions(result, options.actions, originalDispatch, hierarchy)
   if (options.modules) {
     for (const [moduleName, moduleOptions] of Object.entries(options.modules)) {
       if (moduleOptions.namespaced)
-        result[moduleName] = dispatchFromOptions({}, moduleOptions, original, [...hierarchy, moduleName])
+        result[moduleName] = dispatchFromOptions({}, moduleOptions, originalDispatch, [...hierarchy, moduleName])
       else
-        dispatchFromOptions(result, moduleOptions, original, hierarchy)
+        dispatchFromOptions(result, moduleOptions, originalDispatch, hierarchy)
     }
   }
   return result
@@ -112,10 +113,48 @@ function dispatchFromOptions(
 function createDirectActions(
   result: any,
   actionsImpl: ActionsImpl,
-  original: Store<any>,
+  originalDispatch: Store<any>["dispatch"],
   hierarchy?: string[]
 ) {
   const prefix = !hierarchy || hierarchy.length === 0 ? "" : `${hierarchy.join("/")}/`
   for (const name of Object.keys(actionsImpl))
-    result[name] = (payload?: any) => original.dispatch(`${prefix}${name}`, payload)
+    result[name] = (payload?: any) => originalDispatch(`${prefix}${name}`, payload)
+}
+
+// ActionContext
+
+const actionContexts = new WeakMap<ActionContext<any, any>, ReturnType<typeof createActionContext>>()
+
+function actionContextProvider(rootOptions: StoreOptions) {
+  return (options: StoreOrModuleOptions, originalContext: ActionContext<any, any>) => {
+    let context = actionContexts.get(originalContext)
+    if (!context) {
+      context = createActionContext(rootOptions, options, originalContext)
+      actionContexts.set(originalContext, context)
+    }
+    return context
+  }
+}
+
+function createActionContext(
+  rootOptions: StoreOptions,
+  options: StoreOrModuleOptions,
+  originalContext: ActionContext<any, any>
+) {
+  const rootCommit: Commit = (type: string, payload?: any) => originalContext.commit(type, payload, { root: true })
+  const rootDispatch: Dispatch = (type: string, payload?: any) => originalContext.dispatch(type, payload, { root: true })
+  return {
+    get rootState() {
+      return originalContext.rootState
+    },
+    rootGetters: gettersFromOptions({}, rootOptions, originalContext.rootGetters),
+    rootCommit: commitFromOptions({}, rootOptions, rootCommit),
+    rootDispatch: dispatchFromOptions({}, rootOptions, rootDispatch),
+    get state() {
+      return originalContext.state
+    },
+    getters: gettersFromOptions({}, options, originalContext.getters),
+    commit: commitFromOptions({}, options, originalContext.commit),
+    dispatch: dispatchFromOptions({}, options, originalContext.dispatch)
+  }
 }

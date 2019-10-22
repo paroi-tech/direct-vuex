@@ -1,15 +1,19 @@
-import { Store } from "vuex"
+import { Store, ActionContext } from "vuex"
 import { ActionsImpl, GettersImpl, ModulesImpl, MutationsImpl, StoreOptions, StoreOrModuleOptions } from "./index"
 
-export type ToDirectStore<O extends StoreOptions> = ToFlatStore<{
-  readonly state: DirectState<O>
-  getters: DirectGetters<O>
-  commit: DirectMutations<O>
-  dispatch: DirectActions<O>
+export type ToDirectStore<O extends StoreOptions> = {
+  readonly state: ToFlatType<DirectState<O>>
+  getters: ToFlatType<DirectGetters<O>>
+  commit: ToFlatType<DirectMutations<O>>
+  dispatch: ToFlatType<DirectActions<O>>
   original: VuexStore<O>
-}>
 
-export type VuexStore<O extends StoreOptions> = Store<ToFlatStore<DirectState<O>>> & {
+  directActionContext: <P extends StoreOrModuleOptions>(
+    options: P, context: ActionContext<any, any>
+  ) => DirectActionContext<O, P>
+}
+
+export type VuexStore<O extends StoreOptions> = Store<ToFlatType<DirectState<O>>> & {
   direct: ToDirectStore<O>
 }
 
@@ -80,6 +84,19 @@ type ToDirectActions<T extends ActionsImpl> = {
 
 type FlattenActions<I extends ModulesImpl> = UnionToIntersection<I[keyof I]["actions"]>
 
+// ActionContext
+
+type DirectActionContext<R, O> = {
+  rootState: ToFlatType<DirectState<R>>
+  rootGetters: ToFlatType<DirectGetters<R>>
+  rootCommit: ToFlatType<DirectMutations<R>>
+  rootDispatch: ToFlatType<DirectActions<R>>
+  state: ToFlatType<DirectState<O>>
+  getters: ToFlatType<DirectGetters<O>>
+  commit: ToFlatType<DirectMutations<O>>
+  dispatch: ToFlatType<DirectActions<O>>
+}
+
 // Common helpers
 
 type PromiseOf<T> = T extends Promise<any> ? T : Promise<T>
@@ -95,8 +112,8 @@ type OrEmpty<T> = T extends {} ? T : {}
 type UnionToIntersection<U> =
   (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never
 
-type ToFlatStore<T> =
+type ToFlatType<T> =
   T extends Store<any> | Function ? T :
   T extends object ?
-  T extends infer O ? { [K in keyof O]: ToFlatStore<O[K]> } : never
+  T extends infer O ? { [K in keyof O]: ToFlatType<O[K]> } : never
   : T

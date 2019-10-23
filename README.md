@@ -30,15 +30,14 @@ const { store, directActionContext, directRootActionContext } = createDirectStor
 } as const)
 
 export default store
-export type AppStore = typeof store
+export { directActionContext, directRootActionContext }
 
+export type AppStore = typeof store
 declare module "vuex" {
   interface Store<S> {
     direct: AppStore
   }
 }
-
-export { directActionContext, directRootActionContext }
 ```
 
 The classic Vuex store is still accessible through the `store.original` property. We need it to initialize the Vue application:

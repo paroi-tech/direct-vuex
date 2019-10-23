@@ -8,7 +8,9 @@ Just Vuex with typing. Compatible with the Vue 3 composition API.
 
 First, add `direct-vuex` to a Vue application:
 
-    npm install direct-vuex
+```
+npm install direct-vuex
+```
 
 ### Create the store
 
@@ -23,7 +25,7 @@ import { createDirectStore } from "direct-vuex"
 
 Vue.use(Vuex)
 
-const store = createDirectStore({
+const { store, directActionContext, directRootActionContext } = createDirectStore({
   // … store implementation here …
 } as const)
 
@@ -35,6 +37,8 @@ declare module "vuex" {
     direct: AppStore
   }
 }
+
+export { directActionContext, directRootActionContext }
 ```
 
 The classic Vuex store is still accessible through the `store.original` property. We need it to initialize the Vue application:
@@ -87,13 +91,6 @@ store.commit.myModule.myMutation(myPayload)
 Notice: The underlying Vuex store can be used simultaneously if you wish, through the injected `this.$store` or `store.original`.
 
 ### Use typed wrappers from action implementations
-
-In the file where the store is created, add these lines:
-
-```ts
-export const directActionContext = store.directActionContext
-export const directRootActionContext = store.directRootActionContext
-```
 
 Here is an example on how to do in a module:
 

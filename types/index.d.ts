@@ -1,6 +1,6 @@
-import { ToDirectStore } from "./direct-types"
+import { CreatedStore } from "./direct-types"
 
-export function createDirectStore<O extends StoreOptions>(options: O): ToDirectStore<O>
+export function createDirectStore<O extends StoreOptions>(options: O): CreatedStore<O>
 
 /*
  * Types for Vuex Store Options

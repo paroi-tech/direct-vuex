@@ -1,5 +1,14 @@
-import { Store, ActionContext } from "vuex"
+import { ActionContext, Store } from "vuex"
 import { ActionsImpl, GettersImpl, ModulesImpl, MutationsImpl, StoreOptions, StoreOrModuleOptions } from "./index"
+
+export interface CreatedStore<O> {
+  store: ToDirectStore<O>
+
+  directActionContext: <P extends StoreOrModuleOptions>(
+    context: ActionContext<any, any>, options: P
+  ) => DirectActionContext<O, P>
+  directRootActionContext: (context: ActionContext<any, any>) => DirectActionContext<O, O>
+}
 
 export type ToDirectStore<O extends StoreOptions> = {
   readonly state: ToFlatType<DirectState<O>>
@@ -7,11 +16,6 @@ export type ToDirectStore<O extends StoreOptions> = {
   commit: ToFlatType<DirectMutations<O>>
   dispatch: ToFlatType<DirectActions<O>>
   original: VuexStore<O>
-
-  directActionContext: <P extends StoreOrModuleOptions>(
-    context: ActionContext<any, any>, options: P
-  ) => DirectActionContext<O, P>
-  directRootActionContext: (context: ActionContext<any, any>) => DirectActionContext<O, O>
 }
 
 export type VuexStore<O extends StoreOptions> = Store<ToFlatType<DirectState<O>>> & {

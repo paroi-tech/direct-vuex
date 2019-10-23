@@ -1,25 +1,27 @@
-import Vuex, { ActionContext, Commit, Dispatch, Store } from "vuex"
+import Vuex, { ActionContext, Store } from "vuex"
 import { ActionsImpl, GettersImpl, MutationsImpl, StoreOptions, StoreOrModuleOptions } from "../types"
-import { DirectActionContext, ToDirectStore, VuexStore } from "../types/direct-types"
+import { CreatedStore, ToDirectStore, VuexStore } from "../types/direct-types"
 
-export function createDirectStore<O extends StoreOptions>(options: O): ToDirectStore<O> {
+export function createDirectStore<O extends StoreOptions>(options: O): CreatedStore<O> {
   const original = new Vuex.Store(options) as VuexStore<O>
 
-  const direct = {
+  const store: ToDirectStore<O> = {
     get state() {
       return original.state
     },
     getters: gettersFromOptions({}, options, original.getters),
     commit: commitFromOptions({}, options, original.commit),
     dispatch: dispatchFromOptions({}, options, original.dispatch),
-    original,
-  } as ToDirectStore<O>
+    original
+  }
 
-  direct.directActionContext = actionContextProvider(direct)
-  direct.directRootActionContext = rootActionContextProvider(direct)
+  original.direct = store
 
-  original.direct = direct
-  return direct
+  return {
+    store,
+    directActionContext: actionContextProvider(store),
+    directRootActionContext: rootActionContextProvider(store)
+  }
 }
 
 // Getters

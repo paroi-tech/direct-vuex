@@ -4,9 +4,11 @@ import { ActionsImpl, GettersImpl, ModuleOptions, ModulesImpl, MutationsImpl, St
 export interface CreatedStore<R extends StoreOptions> {
   store: ToDirectStore<R>
 
-  rootActionContext: (context: ActionContext<any, any>) => DirectActionContext<R, R>
-  createModuleActionContext<O extends ModuleOptions>(module: O):
-    (context: ActionContext<any, any>) => DirectActionContext<R, O>
+  rootActionContext: (originalContext: ActionContext<any, any>) => DirectActionContext<R, R>
+  moduleActionContext<O extends ModuleOptions>(
+    originalContext: ActionContext<any, any>,
+    module: O
+  ): DirectActionContext<R, O>
 }
 
 export type ToDirectStore<O extends StoreOptions> = {

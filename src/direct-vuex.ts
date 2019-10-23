@@ -20,7 +20,7 @@ export function createDirectStore<O extends StoreOptions>(options: O): CreatedSt
   return {
     store,
     rootActionContext: rootActionContextProvider(store),
-    createModuleActionContext: (module: any) => actionContextProvider(module, store)
+    moduleActionContext: (originalContext: any, module: any) => getModuleActionContext(originalContext, module, store)
   }
 }
 
@@ -127,20 +127,22 @@ function createDirectActions(
 
 // ActionContext
 
-const actionContexts = new WeakMap<any, ReturnType<typeof createActionContext>>()
+const actionContexts = new WeakMap<any, ReturnType<typeof createModuleActionContext>>()
 
-function actionContextProvider(options: ModuleOptions, store: ToDirectStore<any>) {
-  return (originalContext: ActionContext<any, any>) => {
-    let context = actionContexts.get(originalContext.dispatch)
-    if (!context) {
-      context = createActionContext(options, originalContext, store)
-      actionContexts.set(originalContext.dispatch, context)
-    }
-    return context
+function getModuleActionContext(
+  originalContext: ActionContext<any, any>,
+  options: ModuleOptions,
+  store: ToDirectStore<any>
+) {
+  let context = actionContexts.get(originalContext.dispatch)
+  if (!context) {
+    context = createModuleActionContext(options, originalContext, store)
+    actionContexts.set(originalContext.dispatch, context)
   }
+  return context
 }
 
-function createActionContext(
+function createModuleActionContext(
   options: StoreOrModuleOptions,
   originalContext: ActionContext<any, any>,
   store: ToDirectStore<any>

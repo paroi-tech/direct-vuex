@@ -25,12 +25,12 @@ import { createDirectStore } from "direct-vuex"
 
 Vue.use(Vuex)
 
-const { store, directActionContext, directRootActionContext } = createDirectStore({
+const { store, rootActionContext, createModuleActionContext } = createDirectStore({
   // … store implementation here …
 } as const)
 
 export default store
-export { directActionContext, directRootActionContext }
+export { rootActionContext, createModuleActionContext }
 
 export type AppStore = typeof store
 declare module "vuex" {
@@ -94,16 +94,17 @@ Notice: The underlying Vuex store can be used simultaneously if you wish, throug
 Here is an example on how to do in a module:
 
 ```ts
-import { directActionContext } from "./store"
-const myModule = {
+import { createModuleActionContext } from "./store"
+const module = {
   actions: {
     async myAction(context, payload) {
-      const { commit, state } = directActionContext(context, myModule)
+      const { commit, state } = myModuleActionContext(context)
       // … Here, 'commit' and 'state' are typed.
     }
   }
 }
-export default myModule
+export default module
+export const myModuleActionContext = createModuleActionContext(module)
 ```
 
 And the same example, but from the root store:
@@ -111,7 +112,7 @@ And the same example, but from the root store:
 ```ts
   actions: {
     async myAction(context, payload) {
-      const { commit, state } = directRootActionContext(context)
+      const { commit, state } = rootActionContext(context)
       // … Here, 'commit' and 'state' are typed.
     }
   }

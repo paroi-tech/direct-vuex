@@ -1,5 +1,5 @@
 import Vuex, { ActionContext, Store } from "vuex"
-import { ActionsImpl, GettersImpl, MutationsImpl, StoreOptions, StoreOrModuleOptions } from "../types"
+import { ActionsImpl, GettersImpl, ModuleOptions, MutationsImpl, StoreOptions, StoreOrModuleOptions } from "../types"
 import { CreatedStore, ToDirectStore, VuexStore } from "../types/direct-types"
 
 export function createDirectStore<O extends StoreOptions>(options: O): CreatedStore<O> {
@@ -19,8 +19,8 @@ export function createDirectStore<O extends StoreOptions>(options: O): CreatedSt
 
   return {
     store,
-    directActionContext: actionContextProvider(store),
-    directRootActionContext: rootActionContextProvider(store)
+    rootActionContext: rootActionContextProvider(store),
+    createModuleActionContext: (module: any) => actionContextProvider(module, store)
   }
 }
 
@@ -129,8 +129,8 @@ function createDirectActions(
 
 const actionContexts = new WeakMap<any, ReturnType<typeof createActionContext>>()
 
-function actionContextProvider(store: ToDirectStore<any>) {
-  return (originalContext: ActionContext<any, any>, options: StoreOrModuleOptions) => {
+function actionContextProvider(options: ModuleOptions, store: ToDirectStore<any>) {
+  return (originalContext: ActionContext<any, any>) => {
     let context = actionContexts.get(originalContext.dispatch)
     if (!context) {
       context = createActionContext(options, originalContext, store)

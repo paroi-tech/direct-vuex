@@ -1,13 +1,12 @@
 import { ActionContext, Store } from "vuex"
-import { ActionsImpl, GettersImpl, ModulesImpl, MutationsImpl, StoreOptions, StoreOrModuleOptions } from "./index"
+import { ActionsImpl, GettersImpl, ModuleOptions, ModulesImpl, MutationsImpl, StoreOptions, StoreOrModuleOptions } from "./index"
 
-export interface CreatedStore<O> {
-  store: ToDirectStore<O>
+export interface CreatedStore<R extends StoreOptions> {
+  store: ToDirectStore<R>
 
-  directActionContext: <P extends StoreOrModuleOptions>(
-    context: ActionContext<any, any>, options: P
-  ) => DirectActionContext<O, P>
-  directRootActionContext: (context: ActionContext<any, any>) => DirectActionContext<O, O>
+  rootActionContext: (context: ActionContext<any, any>) => DirectActionContext<R, R>
+  createModuleActionContext<O extends ModuleOptions>(module: O):
+    (context: ActionContext<any, any>) => DirectActionContext<R, O>
 }
 
 export type ToDirectStore<O extends StoreOptions> = {

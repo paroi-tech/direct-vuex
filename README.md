@@ -118,6 +118,8 @@ And the same example, but from the root store:
   }
 ```
 
+Warning: Typing action contexts implies that TypeScript should never be allowed to infer the return type of an action from the context of the action. Indeed, this kind of typing would be recursive, since the context includes the return value of the action. When this happens, TypeScript passes the whole context to `any`. _Tl;dr; Declare the return type of actions where it exists!_
+
 ## Contribute
 
 With VS Code, our recommanded plugin is:

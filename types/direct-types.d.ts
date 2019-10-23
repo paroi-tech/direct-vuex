@@ -9,8 +9,9 @@ export type ToDirectStore<O extends StoreOptions> = {
   original: VuexStore<O>
 
   directActionContext: <P extends StoreOrModuleOptions>(
-    options: P, context: ActionContext<any, any>
+    context: ActionContext<any, any>, options: P
   ) => DirectActionContext<O, P>
+  directRootActionContext: (context: ActionContext<any, any>) => DirectActionContext<O, O>
 }
 
 export type VuexStore<O extends StoreOptions> = Store<ToFlatType<DirectState<O>>> & {

@@ -5,7 +5,7 @@ import { DirectActionContext, ToDirectStore, VuexStore } from "../types/direct-t
 export function createDirectStore<O extends StoreOptions>(options: O): ToDirectStore<O> {
   const original = new Vuex.Store(options) as VuexStore<O>
 
-  const direct: ToDirectStore<O> = {
+  const direct = {
     get state() {
       return original.state
     },
@@ -13,8 +13,10 @@ export function createDirectStore<O extends StoreOptions>(options: O): ToDirectS
     commit: commitFromOptions({}, options, original.commit),
     dispatch: dispatchFromOptions({}, options, original.dispatch),
     original,
-    directActionContext: actionContextProvider(options)
-  }
+  } as ToDirectStore<O>
+
+  direct.directActionContext = actionContextProvider(direct)
+  direct.directRootActionContext = rootActionContextProvider(direct)
 
   original.direct = direct
   return direct
@@ -123,38 +125,67 @@ function createDirectActions(
 
 // ActionContext
 
-const actionContexts = new WeakMap<ActionContext<any, any>, ReturnType<typeof createActionContext>>()
+const actionContexts = new WeakMap<any, ReturnType<typeof createActionContext>>()
 
-function actionContextProvider(rootOptions: StoreOptions) {
-  return (options: StoreOrModuleOptions, originalContext: ActionContext<any, any>) => {
-    let context = actionContexts.get(originalContext)
+function actionContextProvider(store: ToDirectStore<any>) {
+  return (originalContext: ActionContext<any, any>, options: StoreOrModuleOptions) => {
+    let context = actionContexts.get(originalContext.dispatch)
     if (!context) {
-      context = createActionContext(rootOptions, options, originalContext)
-      actionContexts.set(originalContext, context)
+      context = createActionContext(options, originalContext, store)
+      actionContexts.set(originalContext.dispatch, context)
     }
     return context
   }
 }
 
 function createActionContext(
-  rootOptions: StoreOptions,
   options: StoreOrModuleOptions,
-  originalContext: ActionContext<any, any>
+  originalContext: ActionContext<any, any>,
+  store: ToDirectStore<any>
 ) {
-  const rootCommit: Commit = (type: string, payload?: any) => originalContext.commit(type, payload, { root: true })
-  const rootDispatch: Dispatch = (type: string, payload?: any) => originalContext.dispatch(type, payload, { root: true })
   return {
     get rootState() {
       return originalContext.rootState
     },
-    rootGetters: gettersFromOptions({}, rootOptions, originalContext.rootGetters),
-    rootCommit: commitFromOptions({}, rootOptions, rootCommit),
-    rootDispatch: dispatchFromOptions({}, rootOptions, rootDispatch),
+    rootGetters: store.getters,
+    rootCommit: store.commit,
+    rootDispatch: store.dispatch,
     get state() {
       return originalContext.state
     },
     getters: gettersFromOptions({}, options, originalContext.getters),
     commit: commitFromOptions({}, options, originalContext.commit),
     dispatch: dispatchFromOptions({}, options, originalContext.dispatch)
+  }
+}
+
+function rootActionContextProvider(store: ToDirectStore<any>) {
+  return (originalContext: ActionContext<any, any>) => {
+    let context = actionContexts.get(originalContext.dispatch)
+    if (!context) {
+      context = createRootActionContext(originalContext, store)
+      actionContexts.set(originalContext.dispatch, context)
+    }
+    return context
+  }
+}
+
+function createRootActionContext(
+  originalContext: ActionContext<any, any>,
+  store: ToDirectStore<any>
+) {
+  return {
+    get rootState() {
+      return originalContext.rootState
+    },
+    rootGetters: store.getters,
+    rootCommit: store.commit,
+    rootDispatch: store.dispatch,
+    get state() {
+      return originalContext.state
+    },
+    getters: store.getters,
+    commit: store.commit,
+    dispatch: store.dispatch
   }
 }

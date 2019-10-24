@@ -14,7 +14,7 @@ npm install direct-vuex
 
 ### Create the store
 
-The store can be implemented almost in the same way as usual. However, **it is necessary to append `as const` at the end of store and module implementation objects**. It will help direct-vuex to better infer types.
+The store can be implemented almost in the same way as usual. However, **it is necessary to append `as const` at the end of store and module implementation objects**. It will allow direct-vuex to correctly infer types.
 
 Create the store:
 
@@ -89,7 +89,7 @@ store.commit.myModule.myMutation(myPayload)
 
 Notice: The underlying Vuex store can be used simultaneously if you wish, through the injected `this.$store` or `store.original`.
 
-### Use typed wrappers in action implementations
+### Use typed wrappers in implementation of actions
 
 Here is an example on how to do in a module:
 

@@ -118,7 +118,7 @@ And the same example, but in the root store:
   }
 ```
 
-Warning: Types in context of actions implies that TypeScript should never be allowed to infer the return type of an action from the context of the action. Indeed, this kind of typing would be recursive, since the context includes the return value of the action. When this happens, TypeScript passes the whole context to `any`. _Tl;dr; Declare the return type of actions where it exists!_
+Warning: Types in the context of actions implies that TypeScript should never be allowed to infer the return type of an action from the context of the action. Indeed, this kind of typing would be recursive, since the context includes the return value of the action. When this happens, TypeScript passes the whole context to `any`. _Tl;dr; Declare the return type of actions where it exists!_
 
 ## Contribute
 

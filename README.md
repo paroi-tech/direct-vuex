@@ -29,9 +29,14 @@ const { store, rootActionContext, moduleActionContext } = createDirectStore({
   // … store implementation here …
 } as const)
 
+// Export the direct-store instead of the classic Vuex store.
 export default store
+
+// The following exports will be used to enable types in the
+// implementation of actions.
 export { rootActionContext, moduleActionContext }
 
+// The following lines enable types in the injected store '$store'.
 export type AppStore = typeof store
 declare module "vuex" {
   interface Store<S> {
@@ -47,7 +52,7 @@ import Vue from "vue"
 import store from "./store"
 
 new Vue({
-  store: store.original, // Inject the classic Vuex store
+  store: store.original, // Inject the classic Vuex store.
   // …
 }).$mount("#app")
 ```
@@ -57,7 +62,7 @@ new Vue({
 From a component, the direct store is accessible through the `direct` property of the classic store:
 
 ```ts
-const store = this.$store.direct
+const store = context.root.$store.direct // or: this.$store.direct
 ```
 
 Or, you can just import it:
@@ -87,11 +92,11 @@ store.getters.myModule.myGetter
 store.commit.myModule.myMutation(myPayload)
 ```
 
-Notice: The underlying Vuex store can be used simultaneously if you wish, through the injected `this.$store` or `store.original`.
+Notice: The underlying Vuex store can be used simultaneously if you wish, through the injected `$store` or `store.original`.
 
 ### Use typed wrappers in implementation of actions
 
-Here is an example on how to do in a module:
+Here is an example on how to do in a Vuex module:
 
 ```ts
 import { moduleActionContext } from "./store"
@@ -118,7 +123,7 @@ And the same example, but in the root store:
   }
 ```
 
-Warning: Types in the context of actions implies that TypeScript should never be allowed to infer the return type of an action from the context of the action. Indeed, this kind of typing would be recursive, since the context includes the return value of the action. When this happens, TypeScript passes the whole context to `any`. _Tl;dr; Declare the return type of actions where it exists!_
+Warning: Types in the context of actions implies that TypeScript should never infer the return type of an action from the context of the action. Indeed, this kind of typing would be recursive, since the context includes the return value of the action. When this happens, TypeScript passes the whole context to `any`. _Tl;dr; Declare the return type of actions where it exists!_
 
 ## Contribute
 

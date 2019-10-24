@@ -14,7 +14,7 @@ npm install direct-vuex
 
 ### Create the store
 
-The store is implemented almost in the same way as usual (ie. without typing). However, **it is necessary to append `as const` at the end of store and module implementation objects**. It will help direct-vuex to better infer types.
+The store can be implemented almost in the same way as usual. However, **it is necessary to append `as const` at the end of store and module implementation objects**. It will help direct-vuex to better infer types.
 
 Create the store:
 

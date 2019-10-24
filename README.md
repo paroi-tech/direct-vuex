@@ -89,7 +89,7 @@ store.commit.myModule.myMutation(myPayload)
 
 Notice: The underlying Vuex store can be used simultaneously if you wish, through the injected `this.$store` or `store.original`.
 
-### Use typed wrappers from action implementations
+### Use typed wrappers in action implementations
 
 Here is an example on how to do in a module:
 
@@ -107,7 +107,7 @@ export default module
 export const myModuleActionContext = context => moduleActionContext(context, module)
 ```
 
-And the same example, but from the root store:
+And the same example, but in the root store:
 
 ```ts
   actions: {
@@ -118,7 +118,7 @@ And the same example, but from the root store:
   }
 ```
 
-Warning: Typing action contexts implies that TypeScript should never be allowed to infer the return type of an action from the context of the action. Indeed, this kind of typing would be recursive, since the context includes the return value of the action. When this happens, TypeScript passes the whole context to `any`. _Tl;dr; Declare the return type of actions where it exists!_
+Warning: Types in context of actions implies that TypeScript should never be allowed to infer the return type of an action from the context of the action. Indeed, this kind of typing would be recursive, since the context includes the return value of the action. When this happens, TypeScript passes the whole context to `any`. _Tl;dr; Declare the return type of actions where it exists!_
 
 ## Contribute
 

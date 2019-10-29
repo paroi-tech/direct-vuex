@@ -11,13 +11,13 @@ export interface CreatedStore<R extends StoreOptions> {
   ): DirectActionContext<R, O>
 }
 
-export type ToDirectStore<O extends StoreOptions> = {
-  readonly state: ToFlatType<DirectState<O>>
-  getters: ToFlatType<DirectGetters<O>>
-  commit: ToFlatType<DirectMutations<O>>
-  dispatch: ToFlatType<DirectActions<O>>
+export type ToDirectStore<O extends StoreOptions> = ToFlatType<{
+  readonly state: DirectState<O>
+  getters: DirectGetters<O>
+  commit: DirectMutations<O>
+  dispatch: DirectActions<O>
   original: VuexStore<O>
-}
+}>
 
 export type VuexStore<O extends StoreOptions> = Store<ToFlatType<DirectState<O>>> & {
   direct: ToDirectStore<O>

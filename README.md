@@ -1,6 +1,8 @@
 # direct-vuex
 
-Use and implement your Vuex store with TypeScript types. Compatible with the Vue 3 composition API.
+[![Build Status](https://travis-ci.com/paleo/direct-vuex.svg?branch=master)](https://travis-ci.com/paleo/direct-vuex)
+
+Use and implement your Vuex store with TypeScript types. Direct-vuex doesn't require classes, so it is compatible with the Vue 3 composition API.
 
 ## How to use
 

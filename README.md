@@ -1,6 +1,6 @@
 # direct-vuex
 
-Just Vuex with typing. Compatible with the Vue 3 composition API.
+Use and implement your Vuex store with TypeScript types. Compatible with the Vue 3 composition API.
 
 ## How to use
 

@@ -92,7 +92,7 @@ type FlattenActions<I extends ModulesImpl> = UnionToIntersection<I[keyof I]["act
 
 // ActionContext
 
-type DirectActionContext<R, O> = {
+interface DirectActionContext<R, O> {
   rootState: ToFlatType<DirectState<R>>
   rootGetters: ToFlatType<DirectGetters<R>>
   rootCommit: ToFlatType<DirectMutations<R>>
@@ -119,7 +119,7 @@ type UnionToIntersection<U> =
   (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never
 
 type ToFlatType<T> =
-  T extends Store<any> | Function ? T :
+  T extends Store<any> | ((...args: any[]) => any) ? T :
   T extends object ?
   T extends infer O ? { [K in keyof O]: ToFlatType<O[K]> } : never
   : T

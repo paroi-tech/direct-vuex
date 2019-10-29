@@ -1,7 +1,7 @@
 {
   "name": "direct-vuex",
-  "version": "0.6.7",
-  "description": "Just Vuex with typing. Compatible with the Vue 3 composition API.",
+  "version": "0.6.8",
+  "description": "Vuex with TypeScript types. Compatible with the Vue 3 composition API.",
   "author": "Paleo",
   "main": "dist/direct-vuex.js",
   "types": "types/index.d.ts",
@@ -31,10 +31,6 @@
   "license": "CC0-1.0",
   "keywords": [
     "vuex",
-    "typing",
-    "typescript",
-    "vue3",
-    "vue",
-    "vuejs"
+    "typescript"
   ]
 }

@@ -3,11 +3,9 @@
   "extends": [
     "tslint:recommended"
   ],
-  "jsRules": true,
   "linterOptions": {
     "exclude": [
-      "node_modules/**",
-      "jest.config.js"
+      "node_modules/**"
     ]
   },
   "rules": {

@@ -138,4 +138,4 @@ Warning: Types in the context of actions implies that TypeScript should never in
 
 With VS Code, our recommanded plugin is:
 
-*   **TSLint** from Microsoft (`ms-vscode.vscode-typescript-tslint-plugin`)
+* **TSLint** from Microsoft (`ms-vscode.vscode-typescript-tslint-plugin`)

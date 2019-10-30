@@ -19,7 +19,7 @@ export type ToDirectStore<O extends StoreOptions> = ToFlatType<{
   original: VuexStore<O>
 }>
 
-export type VuexStore<O extends StoreOptions> = Store<DirectState<O>> & {
+export type VuexStore<O extends StoreOptions> = Store<ToFlatType<DirectState<O>>> & {
   direct: ToDirectStore<O>
 }
 

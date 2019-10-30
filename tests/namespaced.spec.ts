@@ -31,13 +31,13 @@ describe("Namespaced Modules", () => {
   test("Access to namespaced mutation", async () => {
     const { store } = createDirectStore({
       mutations: {
-        mu1: (state: any, payload: { p1: string }) => payload.p1
+        mu1: (state: any, payload: { p1: string }) => { }
       },
       modules: {
         mod1: {
           namespaced: true,
           mutations: {
-            mu2: (state: any, payload: { p2: number }) => payload.p2
+            mu2: (state: any, payload: { p2: number }) => { }
           }
         }
       }

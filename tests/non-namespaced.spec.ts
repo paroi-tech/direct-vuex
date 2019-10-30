@@ -52,13 +52,13 @@ describe("Non-Namespaced Modules", () => {
   test("Merge module mutation in the root store", async () => {
     const { store } = createDirectStore({
       mutations: {
-        mu1: (state: any, payload: { p1: string }) => payload.p1
+        mu1: (state: any, payload: { p1: string }) => { }
       },
       modules: {
         mod1: {
           namespaced: false,
           mutations: {
-            mu2: (state: any, payload: { p2: number }) => payload.p2
+            mu2: (state: any, payload: { p2: number }) => { }
           }
         }
       }

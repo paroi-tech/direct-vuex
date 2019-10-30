@@ -5,6 +5,8 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/c62abca7334941b5ac75e713cd60a0a4)](https://www.codacy.com/manual/paleo/direct-vuex?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=paleo/direct-vuex&amp;utm_campaign=Badge_Grade)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/paleo/direct-vuex)
 [![npm](https://img.shields.io/npm/dm/direct-vuex)](https://www.npmjs.com/package/direct-vuex)
+
+![npm type definitions](https://img.shields.io/npm/types/direct-vuex)
 ![GitHub](https://img.shields.io/github/license/paleo/direct-vuex)
 
 Use and implement your Vuex store with TypeScript types. Direct-vuex doesn't require classes, so it is compatible with the Vue 3 composition API.

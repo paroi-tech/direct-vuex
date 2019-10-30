@@ -19,7 +19,7 @@ export type ToDirectStore<O extends StoreOptions> = ToFlatType<{
   original: VuexStore<O>
 }>
 
-export type VuexStore<O extends StoreOptions> = Store<ToFlatType<DirectState<O>>> & {
+export type VuexStore<O extends StoreOptions> = Store<DirectState<O>> & {
   direct: ToDirectStore<O>
 }
 
@@ -40,7 +40,7 @@ type ToStateObj<T> = T extends (() => any) ? ReturnType<T> : T
 type DirectGetters<O extends StoreOrModuleOptions> =
   ToDirectGetters<OrEmpty<O["getters"]>>
   & GetGettersInModules<FilterNamespaced<OrEmpty<O["modules"]>>>
-  & FlattenGetters<FilterNotNamespaced<OrEmpty<O["modules"]>>>
+  & MergeGettersFromModules<FilterNotNamespaced<OrEmpty<O["modules"]>>>
 
 type GetGettersInModules<I extends ModulesImpl> = {
   [M in keyof I]: DirectGetters<I[M]>
@@ -50,14 +50,15 @@ type ToDirectGetters<T extends GettersImpl> = {
   [K in keyof T]: ReturnType<T[K]>
 }
 
-type FlattenGetters<I extends ModulesImpl> = UnionToIntersection<I[keyof I]["getters"]>
+type MergeGettersFromModules<I extends ModulesImpl> =
+  UnionToIntersection<ToDirectGetters<OrEmpty<I[keyof I]["getters"]>>>
 
 // Mutations
 
 type DirectMutations<O extends StoreOrModuleOptions> =
   ToDirectMutations<OrEmpty<O["mutations"]>>
   & GetMutationsInModules<FilterNamespaced<OrEmpty<O["modules"]>>>
-  & FlattenMutations<FilterNotNamespaced<OrEmpty<O["modules"]>>>
+  & MergeMutationsFromModules<FilterNotNamespaced<OrEmpty<O["modules"]>>>
 
 type GetMutationsInModules<I extends ModulesImpl> = {
   [M in keyof I]: DirectMutations<I[M]>
@@ -69,14 +70,15 @@ type ToDirectMutations<T extends MutationsImpl> = {
   : ((payload: Parameters<T[K]>[1]) => void)
 }
 
-type FlattenMutations<I extends ModulesImpl> = UnionToIntersection<I[keyof I]["mutations"]>
+type MergeMutationsFromModules<I extends ModulesImpl> =
+  UnionToIntersection<ToDirectMutations<OrEmpty<I[keyof I]["mutations"]>>>
 
 // Actions
 
 type DirectActions<O extends StoreOrModuleOptions> =
   ToDirectActions<OrEmpty<O["actions"]>>
   & GetActionsInModules<FilterNamespaced<OrEmpty<O["modules"]>>>
-  & FlattenActions<FilterNotNamespaced<OrEmpty<O["modules"]>>>
+  & MergeActionsFromModules<FilterNotNamespaced<OrEmpty<O["modules"]>>>
 
 type GetActionsInModules<I extends ModulesImpl> = {
   [M in keyof I]: DirectActions<I[M]>
@@ -88,30 +90,31 @@ type ToDirectActions<T extends ActionsImpl> = {
   : ((payload: Parameters<T[K]>[1]) => PromiseOf<ReturnType<T[K]>>)
 }
 
-type FlattenActions<I extends ModulesImpl> = UnionToIntersection<I[keyof I]["actions"]>
+type MergeActionsFromModules<I extends ModulesImpl> =
+  UnionToIntersection<ToDirectActions<OrEmpty<I[keyof I]["actions"]>>>
 
 // ActionContext
 
-interface DirectActionContext<R, O> {
-  rootState: ToFlatType<DirectState<R>>
-  rootGetters: ToFlatType<DirectGetters<R>>
-  rootCommit: ToFlatType<DirectMutations<R>>
-  rootDispatch: ToFlatType<DirectActions<R>>
-  state: ToFlatType<DirectState<O>>
-  getters: ToFlatType<DirectGetters<O>>
-  commit: ToFlatType<DirectMutations<O>>
-  dispatch: ToFlatType<DirectActions<O>>
-}
+type DirectActionContext<R, O> = ToFlatType<{
+  rootState: DirectState<R>
+  rootGetters: DirectGetters<R>
+  rootCommit: DirectMutations<R>
+  rootDispatch: DirectActions<R>
+  state: DirectState<O>
+  getters: DirectGetters<O>
+  commit: DirectMutations<O>
+  dispatch: DirectActions<O>
+}>
 
 // Common helpers
 
 type PromiseOf<T> = T extends Promise<any> ? T : Promise<T>
 
 type FilterNamespaced<I extends ModulesImpl> = Pick<I, KeyOfType<I, { namespaced: true }>>
-
-type FilterNotNamespaced<I extends ModulesImpl> = Pick<I, KeyOfType<I, { namespaced?: false }>>
-
 type KeyOfType<T, U> = { [P in keyof T]: T[P] extends U ? P : never }[keyof T]
+
+type FilterNotNamespaced<I extends ModulesImpl> = Pick<I, NotKeyOfType<I, { namespaced: true }>>
+type NotKeyOfType<T, U> = { [P in keyof T]: T[P] extends U ? never : P }[keyof T]
 
 type OrEmpty<T> = T extends {} ? T : {}
 

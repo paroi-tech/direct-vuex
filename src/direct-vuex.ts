@@ -7,7 +7,7 @@ export function createDirectStore<O extends StoreOptions>(options: O): CreatedSt
 
   const store: ToDirectStore<O> = {
     get state() {
-      return original.state
+      return original.state as any
     },
     getters: gettersFromOptions({}, options, original.getters),
     commit: commitFromOptions({}, options, original.commit),
@@ -19,8 +19,9 @@ export function createDirectStore<O extends StoreOptions>(options: O): CreatedSt
 
   return {
     store,
-    rootActionContext: rootActionContextProvider(store),
-    moduleActionContext: (originalContext: any, module: any) => getModuleActionContext(originalContext, module, store)
+    rootActionContext: rootActionContextProvider(store as any),
+    moduleActionContext:
+      (originalContext: any, module: any) => getModuleActionContext(originalContext, module, store as any)
   }
 }
 
@@ -133,7 +134,7 @@ function getModuleActionContext(
   originalContext: ActionContext<any, any>,
   options: ModuleOptions,
   store: ToDirectStore<any>
-) {
+): any {
   let context = actionContexts.get(originalContext.dispatch)
   if (!context) {
     context = createModuleActionContext(options, originalContext, store)
@@ -163,7 +164,7 @@ function createModuleActionContext(
   }
 }
 
-function rootActionContextProvider(store: ToDirectStore<any>) {
+function rootActionContextProvider(store: ToDirectStore<any>): any {
   return (originalContext: ActionContext<any, any>) => {
     let context = actionContexts.get(originalContext.dispatch)
     if (!context) {

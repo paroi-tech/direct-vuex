@@ -115,7 +115,7 @@ const module = {
       // … Here, 'commit' and 'state' are typed.
     }
   }
-}
+} as const
 export default module
 export const myModuleActionContext = context => moduleActionContext(context, module)
 ```

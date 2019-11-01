@@ -108,7 +108,7 @@ Here is an example on how to do in a Vuex module:
 
 ```ts
 import { moduleActionContext } from "./store"
-const module = {
+const myModule = {
   actions: {
     async myAction(context, payload) {
       const { commit, state } = myModuleActionContext(context)
@@ -116,8 +116,8 @@ const module = {
     }
   }
 } as const
-export default module
-export const myModuleActionContext = context => moduleActionContext(context, module)
+export default myModule
+export const myModuleActionContext = context => moduleActionContext(context, myModule)
 ```
 
 And the same example, but in the root store:

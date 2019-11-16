@@ -1,6 +1,6 @@
 {
   "name": "direct-vuex",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "description": "Use and implement your Vuex store with TypeScript types. Compatible with the Vue 3 composition API.",
   "author": "Paleo",
   "main": "dist/direct-vuex.js",
@@ -20,14 +20,14 @@
     "vuex": "*"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.21",
+    "@types/jest": "^24.0.23",
     "jest": "^24.9.0",
     "rimraf": "^3.0.0",
     "ts-jest": "^24.1.0",
-    "tslint": "^5.20.0",
-    "typescript": "^3.6.4",
+    "tslint": "^5.20.1",
+    "typescript": "^3.7.2",
     "vue": "*",
-    "vuex": "*"
+    "vuex": "^3.1.2"
   },
   "repository": {
     "type": "git",

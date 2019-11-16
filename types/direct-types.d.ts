@@ -11,15 +11,15 @@ export interface CreatedStore<R extends StoreOptions> {
   ): DirectActionContext<R, O>
 }
 
-export type ToDirectStore<O extends StoreOptions> = ToFlatType<{
-  readonly state: DirectState<O>
-  getters: DirectGetters<O>
-  commit: DirectMutations<O>
-  dispatch: DirectActions<O>
+export type ToDirectStore<O extends StoreOptions> = ShowContent<{
+  readonly state: ShowContent<DirectState<O>>
+  getters: ShowContent<DirectGetters<O>>
+  commit: ShowContent<DirectMutations<O>>
+  dispatch: ShowContent<DirectActions<O>>
   original: VuexStore<O>
 }>
 
-export type VuexStore<O extends StoreOptions> = Store<ToFlatType<DirectState<O>>> & {
+export type VuexStore<O extends StoreOptions> = Store<ShowContent<DirectState<O>>> & {
   direct: ToDirectStore<O>
 }
 
@@ -95,7 +95,7 @@ type MergeActionsFromModules<I extends ModulesImpl> =
 
 // ActionContext
 
-type DirectActionContext<R, O> = ToFlatType<{
+type DirectActionContext<R, O> = ShowContent<{
   rootState: DirectState<R>
   rootGetters: DirectGetters<R>
   rootCommit: DirectMutations<R>
@@ -121,8 +121,14 @@ type OrEmpty<T> = T extends {} ? T : {}
 type UnionToIntersection<U> =
   (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never
 
-type ToFlatType<T> =
-  T extends Store<any> | ((...args: any[]) => any) ? T :
+type ShowContent<T> =
+  T extends ((...args: any[]) => any) ? T :
   T extends object ?
-  T extends infer O ? { [K in keyof O]: ToFlatType<O[K]> } : never
+  T extends infer O ? { [K in keyof O]: ShowContentDepth1<O[K]> } : never
+  : T
+
+type ShowContentDepth1<T> =
+  T extends ((...args: any[]) => any) ? T :
+  T extends object ?
+  T extends infer O ? { [K in keyof O]: O[K] } : never
   : T

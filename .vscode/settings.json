@@ -1,20 +1,21 @@
 {
-  "editor.codeActionsOnSave": {
-    "source.fixAll": true,
-    "source.organizeImports": true
+  "[typescript]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll": true,
+      "source.organizeImports": true
+    },
+    "editor.defaultFormatter": "vscode.typescript-language-features",
+    "editor.formatOnSave": true
   },
-  "editor.formatOnSave": true,
   "editor.insertSpaces": true,
-  "editor.rulers": [
-    120
-  ],
+  "editor.rulers": [120],
   "editor.tabSize": 2,
-  "editor.wordWrapColumn": 132,
   "editor.wordWrap": "wordWrapColumn",
+  "editor.wordWrapColumn": 132,
   "files.encoding": "utf8",
   "files.trimTrailingWhitespace": true,
+  "javascript.format.semicolons": "remove",
   "search.useIgnoreFiles": true,
-  "tslint.configFile": "tslint.json",
   "typescript.locale": "en",
   "typescript.preferences.importModuleSpecifier": "relative",
   "typescript.preferences.quoteStyle": "double"

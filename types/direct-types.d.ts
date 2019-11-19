@@ -122,13 +122,13 @@ type UnionToIntersection<U> =
   (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never
 
 type ShowContent<T> =
-  T extends ((...args: any[]) => any) ? T :
+  T extends Function ? T :
   T extends object ?
   T extends infer O ? { [K in keyof O]: ShowContentDepth1<O[K]> } : never
   : T
 
 type ShowContentDepth1<T> =
-  T extends ((...args: any[]) => any) ? T :
+  T extends Function ? T :
   T extends object ?
   T extends infer O ? { [K in keyof O]: O[K] } : never
   : T

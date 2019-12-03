@@ -138,7 +138,8 @@ function getModuleActionContext(
   let context = actionContexts.get(originalContext.dispatch)
   if (!context) {
     context = createModuleActionContext(options, originalContext, store)
-    actionContexts.set(originalContext.dispatch, context)
+    if (originalContext.dispatch) // Can be 'undefined' in test units
+      actionContexts.set(originalContext.dispatch, context)
   }
   return context
 }
@@ -169,7 +170,8 @@ function rootActionContextProvider(store: ToDirectStore<any>): any {
     let context = actionContexts.get(originalContext.dispatch)
     if (!context) {
       context = createRootActionContext(originalContext, store)
-      actionContexts.set(originalContext.dispatch, context)
+      if (originalContext.dispatch) // Can be 'undefined' in test units
+        actionContexts.set(originalContext.dispatch, context)
     }
     return context
   }

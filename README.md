@@ -110,21 +110,21 @@ Here is an example on how to do in a Vuex module:
 import { moduleActionContext } from "./store"
 const myModule = {
   actions: {
-    async myAction(context, payload) {
+    async myAction(context: any, payload) {
       const { commit, state } = myModuleActionContext(context)
       // … Here, 'commit' and 'state' are typed.
     }
   }
 } as const
 export default myModule
-export const myModuleActionContext = context => moduleActionContext(context, myModule)
+export const myModuleActionContext = (context: any) => moduleActionContext(context, myModule)
 ```
 
 And the same example, but in the root store:
 
 ```ts
   actions: {
-    async myAction(context, payload) {
+    async myAction(context: any, payload) {
       const { commit, state } = rootActionContext(context)
       // … Here, 'commit' and 'state' are typed.
     }

@@ -147,7 +147,7 @@ It is possible to not use `createModule`. But then, it is necessary to append `a
 
 Warning: Types in the context of actions implies that TypeScript should never infer the return type of an action from the context of the action. Indeed, this kind of typing would be recursive, since the context includes the return value of the action. When this happens, TypeScript passes the whole context to `any`. _Tl;dr; Declare the return type of actions where it exists!_
 
-### A Limitation on how to declare a State
+### A limitation on how to declare a State
 
 In store and module options, the `state` property shouldn't be declared with the ES6 method syntax.
 

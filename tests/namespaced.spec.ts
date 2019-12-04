@@ -9,17 +9,17 @@ describe("Namespaced Modules", () => {
   test("Access to namespaced action", async () => {
     const { store } = createDirectStore({
       actions: {
-        a1: async (context: any, payload: { p1: string }) => payload.p1
+        a1: async (context, payload: { p1: string }) => payload.p1
       },
       modules: {
         mod1: {
           namespaced: true,
           actions: {
-            a2: async (context: any, payload: { p2: number }) => payload.p2
+            a2: async (context, payload: { p2: number }) => payload.p2
           }
         }
       }
-    } as const)
+    })
 
     const p1: string = await store.dispatch.a1({ p1: "abc" })
     expect(p1).toBe("abc")
@@ -31,17 +31,17 @@ describe("Namespaced Modules", () => {
   test("Access to namespaced mutation", async () => {
     const { store } = createDirectStore({
       mutations: {
-        mu1: (state: any, payload: { p1: string }) => { }
+        mu1: (state, payload: { p1: string }) => { }
       },
       modules: {
         mod1: {
           namespaced: true,
           mutations: {
-            mu2: (state: any, payload: { p2: number }) => { }
+            mu2: (state, payload: { p2: number }) => { }
           }
         }
       }
-    } as const)
+    })
 
     store.commit.mu1({ p1: "abc" })
     store.commit.mod1.mu2({ p2: 123 })
@@ -50,7 +50,7 @@ describe("Namespaced Modules", () => {
   test("Access to namespaced getter", async () => {
     const { store } = createDirectStore({
       getters: {
-        g1: (state: any) => "abc"
+        g1: (state) => "abc"
       },
       modules: {
         mod1: {
@@ -60,7 +60,7 @@ describe("Namespaced Modules", () => {
           }
         }
       }
-    } as const)
+    })
 
     const g1: string = store.getters.g1
     expect(g1).toBe("abc")

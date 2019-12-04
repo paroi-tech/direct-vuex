@@ -118,7 +118,7 @@ type KeyOfType<T, U> = { [P in keyof T]: T[P] extends U ? P : never }[keyof T]
 type FilterNotNamespaced<I extends ModulesImpl> = Pick<I, NotKeyOfType<I, { namespaced: true }>>
 type NotKeyOfType<T, U> = { [P in keyof T]: T[P] extends U ? never : P }[keyof T]
 
-type OrEmpty<T> = T extends {} ? T : {}
+export type OrEmpty<T> = T extends {} ? T : {}
 
 type UnionToIntersection<U> =
   (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never

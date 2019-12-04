@@ -1,8 +1,11 @@
 import Vuex, { ActionContext, Store } from "vuex"
-import { ActionsImpl, GettersImpl, ModuleOptions, ModulesImpl, MutationsImpl, StoreOptions, StoreOrModuleOptions, WithState } from "../types"
+import { ActionsImpl, GettersImpl, ModuleOptions, ModulesImpl, MutationsImpl, StateOf, StoreOptions, StoreOrModuleOptions, WithOptionalState } from "../types"
 import { CreatedStore, ToDirectStore, VuexStore } from "../types/direct-types"
 
-export function createDirectStore<O extends WithState, S = O["state"]>(options: O & StoreOptions<S>): CreatedStore<O> {
+export function createDirectStore<
+  O extends WithOptionalState,
+  S = StateOf<O>
+>(options: O & StoreOptions<S>): CreatedStore<O> {
   const original = new Vuex.Store(options as any) as VuexStore<O>
 
   const store: ToDirectStore<O> = {
@@ -25,7 +28,10 @@ export function createDirectStore<O extends WithState, S = O["state"]>(options: 
   }
 }
 
-export function createModule<O extends WithState, S = O["state"]>(options: O & ModuleOptions<S>): O {
+export function createModule<
+  O extends WithOptionalState,
+  S = StateOf<O>
+>(options: O & ModuleOptions<S>): O {
   return options
 }
 

@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "strict": true,
-    "noImplicitAny": false,
     "target": "es2015",
     "module": "commonjs",
     "sourceMap": false,

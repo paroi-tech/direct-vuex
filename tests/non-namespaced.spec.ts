@@ -19,7 +19,7 @@ describe("Non-Namespaced Modules", () => {
           }
         }
       }
-    } as const)
+    })
 
     const p1: string = await store.dispatch.a1({ p1: "abc" })
     expect(p1).toBe("abc")
@@ -40,7 +40,7 @@ describe("Non-Namespaced Modules", () => {
           }
         }
       }
-    } as const)
+    })
 
     const p1: string = await store.dispatch.a1({ p1: "abc" })
     expect(p1).toBe("abc")
@@ -62,7 +62,7 @@ describe("Non-Namespaced Modules", () => {
           }
         }
       }
-    } as const)
+    })
 
     store.commit.mu1({ p1: "abc" })
     store.commit.mu2({ p2: 123 })
@@ -81,7 +81,7 @@ describe("Non-Namespaced Modules", () => {
           }
         }
       }
-    } as const)
+    })
 
     const g1: string = store.getters.g1
     expect(g1).toBe("abc")

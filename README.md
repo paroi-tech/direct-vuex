@@ -106,6 +106,7 @@ Notice: The underlying Vuex store can be used simultaneously if you wish, throug
 Use `createModule`:
 
 ```ts
+import { createModule } from "direct-vuex"
 import { moduleActionContext } from "./store"
 
 export interface Mod1State {

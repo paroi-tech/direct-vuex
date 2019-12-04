@@ -37,6 +37,8 @@ type ToStateObj<T> = T extends (() => any) ? ReturnType<T> : T
 
 // Getters
 
+// export type SelfGetters<T> = ToDirectGetters<OrEmpty<T>>
+
 type DirectGetters<O extends StoreOrModuleOptions> =
   ToDirectGetters<OrEmpty<O["getters"]>>
   & GetGettersInModules<FilterNamespaced<OrEmpty<O["modules"]>>>

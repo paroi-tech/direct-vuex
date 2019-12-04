@@ -1,9 +1,9 @@
 import Vuex, { ActionContext, Store } from "vuex"
-import { ActionsImpl, GettersImpl, ModuleOptions, MutationsImpl, StoreOptions, StoreOrModuleOptions } from "../types"
+import { ActionsImpl, GettersImpl, ModuleOptions, ModulesImpl, MutationsImpl, StoreOptions, StoreOrModuleOptions, WithState } from "../types"
 import { CreatedStore, ToDirectStore, VuexStore } from "../types/direct-types"
 
-export function createDirectStore<O extends StoreOptions>(options: O): CreatedStore<O> {
-  const original = new Vuex.Store(options) as VuexStore<O>
+export function createDirectStore<O extends WithState, S = O["state"]>(options: O & StoreOptions<S>): CreatedStore<O> {
+  const original = new Vuex.Store(options as any) as VuexStore<O>
 
   const store: ToDirectStore<O> = {
     get state() {
@@ -23,6 +23,26 @@ export function createDirectStore<O extends StoreOptions>(options: O): CreatedSt
     moduleActionContext:
       (originalContext: any, module: any) => getModuleActionContext(originalContext, module, store as any)
   }
+}
+
+export function createModule<O extends WithState, S = O["state"]>(options: O & ModuleOptions<S>): O {
+  return options
+}
+
+export function createModules<S>(): (<T>(modules: T & ModulesImpl<S>) => T) {
+  return modules => modules
+}
+
+export function createGetters<S>(): (<T>(getters: T & GettersImpl<S>) => T) {
+  return getters => getters
+}
+
+export function createMutations<S>(): (<T>(mutations: T & MutationsImpl<S>) => T) {
+  return mutations => mutations
+}
+
+export function createActions<T>(actions: T & ActionsImpl): T {
+  return actions
 }
 
 // Getters

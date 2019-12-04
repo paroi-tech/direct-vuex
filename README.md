@@ -162,13 +162,13 @@ Valid:
 ```
 
 ```ts
-  state: function (): Mod1State { p1: string }
+  state: function (): Mod1State { return { p1: string } }
 ```
 
 Invalid:
 
 ```ts
-  state(): Mod1State { p1: string }
+  state(): Mod1State { return { p1: string } }
 ```
 
 I'm not sure why but TypeScript doesn't infer the state type correctly when we write that.

@@ -99,15 +99,41 @@ store.commit.mod1.myMutation(myPayload)
 
 Notice: The underlying Vuex store can be used simultaneously if you wish, through the injected `$store` or `store.original`.
 
+## A limitation on how to declare a State
+
+In store and module options, the `state` property shouldn't be declared with the ES6 method syntax.
+
+Valid:
+
+```ts
+  state: { p1: string } as Mod1State
+```
+
+```ts
+  state: (): Mod1State => { p1: string }
+```
+
+```ts
+  state: function (): Mod1State { return { p1: string } }
+```
+
+Invalid:
+
+```ts
+  state(): Mod1State { return { p1: string } }
+```
+
+I'm not sure why but TypeScript doesn't infer the state type correctly when we write that.
+
 ## Implement a Vuex Store with typed helpers
 
-Direct-Vuex provides several useful helpers for implementation of the store. They are all optional. If you want to keep your classic implementation of a Vuex Store, the only detail direct-vuex needs is the literal type of the `namespaced` property. You can write `namespaced: true as true` or append `as const` where there is a `namespaced` property. But you don't need to worry about that if you use the helpers described in the following sections.
+Direct-vuex provides several useful helpers for implementation of the store. They are all optional. If you want to keep your classic implementation of a Vuex Store, direct-vuex needs to infer the literal type of the `namespaced` property. You can write `namespaced: true as true` or append `as const` where there is a `namespaced` property. But you don't need to worry about that if you use the helpers described in the following sections.
 
 ### In a Vuex Module
 
 Like [the function `createComponent`](https://vue-composition-api-rfc.netlify.com/api.html#createcomponent) from the composition API, the function `createModule` is provided solely for type inference. It is a no-op behavior-wise. It expects a module implementation and returns the argument as-is.
 
-The generated function `moduleActionContext` is a factory for creating a function `mod1ActionContext`, which converts the injected action `context` to the direct vuex one.
+The generated function `moduleActionContext` is a factory for creating a function `mod1ActionContext`, which converts the injected action `context` to the direct-vuex one.
 
 Here is how to use `createModule` and `moduleActionContext`:
 
@@ -151,39 +177,13 @@ export const mod1ActionContext = (context: any) => moduleActionContext(context, 
 
 Warning: Types in the context of actions implies that TypeScript should never infer the return type of an action from the context of the action. Indeed, this kind of typing would be recursive, since the context includes the return value of the action. When this happens, TypeScript passes the whole context to `any`. _Tl;dr; Declare the return type of actions where it exists!_
 
-### A limitation on how to declare a State
-
-In store and module options, the `state` property shouldn't be declared with the ES6 method syntax.
-
-Valid:
-
-```ts
-  state: { p1: string } as Mod1State
-```
-
-```ts
-  state: (): Mod1State => { p1: string }
-```
-
-```ts
-  state: function (): Mod1State { return { p1: string } }
-```
-
-Invalid:
-
-```ts
-  state(): Mod1State { return { p1: string } }
-```
-
-I'm not sure why but TypeScript doesn't infer the state type correctly when we write that.
-
 ### Get the typed context of a Vuex Action, but in the root store
 
 The generated function `rootActionContext` converts the injected action `context` to the direct vuex one, at the root level (not in a module).
 
 ```ts
   actions: {
-    async actionInTheRootStore(context: any, payload) {
+    async actionInTheRootStore(context, payload) {
       const { commit, state } = rootActionContext(context)
       // … Here, 'commit' and 'state' are typed.
     }

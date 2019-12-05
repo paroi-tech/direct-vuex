@@ -67,4 +67,15 @@ describe("Namespaced Modules", () => {
     const g2: number = store.getters.mod1.g2
     expect(g2).toBe(123)
   })
+
+  test("Access to namespaced getter with parameter", async () => {
+    const { store } = createDirectStore({
+      getters: {
+        hello: state => (name: string) => `Hello, ${name}!`
+      },
+    })
+
+    const g1: string = store.getters.hello("John")
+    expect(g1).toBe("Hello, John!")
+  })
 })

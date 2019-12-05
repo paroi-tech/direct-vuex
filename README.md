@@ -9,6 +9,8 @@
 
 Use and implement your Vuex store with TypeScript types. Direct-vuex doesn't require classes, therefore it is compatible with the Vue 3 composition API.
 
+**_Warning! BREAKING CHANGE in version 0.8: do not use `as const` with `createDirectStore`. See also the section [Implement a Vuex Store with typed helpers](#implement-a-vuex-store-with-typed-helpers)._**
+
 ## Install
 
 First, add `direct-vuex` to a Vue application:

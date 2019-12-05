@@ -133,9 +133,9 @@ Direct-vuex provides several useful helpers for implementation of the store. The
 
 ### In a Vuex Module
 
-Like [the function `createComponent`](https://vue-composition-api-rfc.netlify.com/api.html#createcomponent) from the composition API, the function `createModule` is provided solely for type inference. It is a no-op behavior-wise. It expects a module implementation and returns the argument as-is.
+The function `createModule` is provided solely for type inference. It is a no-op behavior-wise. It expects a module implementation and returns the argument as-is. This behaviour is similar to (and inspired from) the [function `createComponent`](https://vue-composition-api-rfc.netlify.com/api.html#createcomponent) from the composition API.
 
-The generated function `moduleActionContext` is a factory for creating a function `mod1ActionContext`, which converts the injected action `context` to the direct-vuex one.
+The generated function `moduleActionContext` is a factory for creating a function `mod1ActionContext`, which converts the injected action context to the direct-vuex one.
 
 Here is how to use `createModule` and `moduleActionContext`:
 
@@ -181,7 +181,7 @@ Warning: Types in the context of actions implies that TypeScript should never in
 
 ### Get the typed context of a Vuex Action, but in the root store
 
-The generated function `rootActionContext` converts the injected action `context` to the direct-vuex one, at the root level (not in a module).
+The generated function `rootActionContext` converts the injected action context to the direct-vuex one, at the root level (not in a module).
 
 ```ts
   actions: {

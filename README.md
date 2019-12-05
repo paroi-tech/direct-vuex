@@ -9,7 +9,7 @@
 
 Use and implement your Vuex store with TypeScript types. Direct-vuex doesn't require classes, therefore it is compatible with the Vue 3 composition API.
 
-**_Warning! BREAKING CHANGE in version 0.8: do not use `as const` with `createDirectStore`. See also the section [Implement a Vuex Store with typed helpers](#implement-a-vuex-store-with-typed-helpers)._**
+**_Warning! BREAKING CHANGE in version 0.8: do not use `as const` with `createDirectStore`. Additionally, there is a new limitation on [how to declare a state](#a-limitation-on-how-to-declare-a-state). See also the section: [Implement a Vuex Store with typed helpers](#implement-a-vuex-store-with-typed-helpers)._**
 
 ## Install
 
@@ -181,7 +181,7 @@ Warning: Types in the context of actions implies that TypeScript should never in
 
 ### Get the typed context of a Vuex Action, but in the root store
 
-The generated function `rootActionContext` converts the injected action `context` to the direct vuex one, at the root level (not in a module).
+The generated function `rootActionContext` converts the injected action `context` to the direct-vuex one, at the root level (not in a module).
 
 ```ts
   actions: {

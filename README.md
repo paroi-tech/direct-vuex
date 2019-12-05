@@ -196,10 +196,7 @@ The function `createGetters` is provided solely for type inference. It is a no-o
 
 ```ts
 import { createGetters } from "direct-vuex"
-
-export interface Mod1State {
-  p1: string
-}
+import { Mod1State } from "./mod1" // Import the local definition of the state (for example from the current module)
 
 export default createGetters<Mod1State>()({
   getter1(state) {
@@ -216,6 +213,7 @@ The function `createMutations` is provided solely for type inference. It is a no
 
 ```ts
 import { createMutations } from "direct-vuex"
+import { Mod1State } from "./mod1" // Import the local definition of the state (for example from the current module)
 
 export default createMutations<Mod1State>()({
   SET_P1(state, p1: string) {

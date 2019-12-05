@@ -101,9 +101,15 @@ Notice: The underlying Vuex store can be used simultaneously if you wish, throug
 
 ## Implement a Vuex Store with typed helpers
 
+Direct-Vuex provides several useful helpers for implementation of the store. They are all optional. If you want to keep your classic implementation of a Vuex Store, the only detail direct-vuex needs is the literal type of the `namespaced` property. You can write `namespaced: true as true` or append `as const` where there is a `namespaced` property. But you don't need to worry about that if you use the helpers described in the following sections.
+
 ### In a Vuex Module
 
-Use `createModule`:
+Like [the function `createComponent`](https://vue-composition-api-rfc.netlify.com/api.html#createcomponent) from the composition API, the function `createModule` is provided solely for type inference. It is a no-op behavior-wise. It expects a module implementation and returns the argument as-is.
+
+The generated function `moduleActionContext` is a factory for creating a function `mod1ActionContext`, which converts the injected action `context` to the direct vuex one.
+
+Here is how to use `createModule` and `moduleActionContext`:
 
 ```ts
 import { createModule } from "direct-vuex"
@@ -143,8 +149,6 @@ export default mod1
 export const mod1ActionContext = (context: any) => moduleActionContext(context, mod1)
 ```
 
-It is possible to not use `createModule`. But then, it is necessary to append `as const` at the end of the module implementation object. It will allow direct-vuex to correctly infer the literal type of `namespaced`.
-
 Warning: Types in the context of actions implies that TypeScript should never infer the return type of an action from the context of the action. Indeed, this kind of typing would be recursive, since the context includes the return value of the action. When this happens, TypeScript passes the whole context to `any`. _Tl;dr; Declare the return type of actions where it exists!_
 
 ### A limitation on how to declare a State
@@ -175,6 +179,8 @@ I'm not sure why but TypeScript doesn't infer the state type correctly when we w
 
 ### Get the typed context of a Vuex Action, but in the root store
 
+The generated function `rootActionContext` converts the injected action `context` to the direct vuex one, at the root level (not in a module).
+
 ```ts
   actions: {
     async actionInTheRootStore(context: any, payload) {
@@ -185,6 +191,8 @@ I'm not sure why but TypeScript doesn't infer the state type correctly when we w
 ```
 
 ### Use `createGetters`
+
+The function `createGetters` is provided solely for type inference. It is a no-op behavior-wise. It is a factory for a function, which expects the object of a `getters` property and returns the argument as-is.
 
 ```ts
 import { createGetters } from "direct-vuex"
@@ -204,6 +212,8 @@ Note: There is a limitation. The second parameters `getters` in a getter impleme
 
 ### Use `createMutations`
 
+The function `createMutations` is provided solely for type inference. It is a no-op behavior-wise. It is a factory for a function, which expects the object of a `mutations` property and returns the argument as-is.
+
 ```ts
 import { createMutations } from "direct-vuex"
 
@@ -216,6 +226,8 @@ export default createMutations<Mod1State>()({
 ```
 
 ### Use `createActions`
+
+The function `createActions` is provided solely for type inference. It is a no-op behavior-wise. It expects the object of an `actions` property and returns the argument as-is.
 
 ```ts
 import { createActions } from "direct-vuex"

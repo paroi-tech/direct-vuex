@@ -1,16 +1,18 @@
 {
   "name": "direct-vuex",
-  "version": "0.8.5",
+  "version": "0.8.6",
   "description": "Use and implement your Vuex store with TypeScript types. Compatible with the Vue 3 composition API.",
   "author": "Paleo",
   "main": "dist/direct-vuex.js",
+  "module": "dist-esm/direct-vuex.js",
   "types": "types/index.d.ts",
   "scripts": {
     "prepublishOnly": "npm run build",
-    "clear": "rimraf 'dist/*'",
+    "clear": "rimraf 'dist/*' 'dist-esm/*'",
     "tsc": "tsc",
     "tsc:watch": "tsc --watch",
-    "build": "npm run clear && npm run tsc",
+    "tsc:esm": "tsc --module ES2015 --outDir dist-esm",
+    "build": "npm run clear && npm run tsc && npm run tsc:esm",
     "lint": "tslint -p tsconfig.json -t verbose",
     "test": "jest",
     "test:watch": "jest --watch"

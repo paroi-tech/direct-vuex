@@ -3,6 +3,3 @@
 
 node_modules
 .npmrc
-
-/dist
-/dist-esm

@@ -31,7 +31,8 @@ describe("Action Contexts", () => {
         async a1(context: any, payload: { p1: string }) {
           const { dispatch, rootDispatch } = rootActionContext(context)
 
-          expect(dispatch.a1).toBe(rootDispatch.a1)
+          expect(dispatch.a1).toBeDefined()
+          expect(rootDispatch.a1).toBeDefined()
 
           return payload.p1
         }

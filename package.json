@@ -1,6 +1,6 @@
 {
   "name": "direct-vuex",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "Use and implement your Vuex store with TypeScript types. Compatible with the Vue 3 composition API.",
   "author": "Paleo",
   "files": ["dist", "types"],
@@ -14,7 +14,7 @@
     "tsc": "tsc",
     "tsc:watch": "tsc --watch",
     "make-bundles": "node build/make-bundles.js",
-    "build": "npm run clear && npm run tsc && npm run tsc-umd && npm run make-bundles",
+    "build": "npm run clear && npm run tsc && npm run tsc-umd && npm run make-bundles && npm run test",
     "lint": "tslint -p tsconfig.json -t verbose",
     "test": "jest",
     "test:watch": "jest --watch"

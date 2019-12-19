@@ -8,13 +8,13 @@
   "module": "dist/direct-vuex.esm.js",
   "types": "types/index.d.ts",
   "scripts": {
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "npm run build && npm run test",
     "clear": "rimraf 'build/compiled-esm/*' 'build/compiled-umd/*'",
     "tsc-umd": "tsc --module UMD --outDir build/compiled-umd",
     "tsc": "tsc",
     "tsc:watch": "tsc --watch",
     "make-bundles": "node build/make-bundles.js",
-    "build": "npm run clear && npm run tsc && npm run tsc-umd && npm run make-bundles && npm run test",
+    "build": "npm run clear && npm run tsc && npm run tsc-umd && npm run make-bundles",
     "lint": "tslint -p tsconfig.json -t verbose",
     "test": "jest",
     "test:watch": "jest --watch"

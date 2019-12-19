@@ -97,7 +97,7 @@ type MergeActionsFromModules<I extends ModulesImpl> =
 
 // ActionContext
 
-type DirectActionContext<R, O> = ShowContent<{
+export type DirectActionContext<R, O> = ShowContent<{
   rootState: DirectState<R>
   rootGetters: DirectGetters<R>
   rootCommit: DirectMutations<R>

@@ -4,5 +4,10 @@
 node_modules
 .npmrc
 
+/build/compiled-esm
+/build/compiled-umd
+
 /dist
-/dist-esm
+
+/direct-vuex.min.js
+/direct-vuex.esm.min.js

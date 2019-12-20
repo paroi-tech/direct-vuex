@@ -1,5 +1,5 @@
 const { existsSync } = require("fs")
-const { readFile, writeFile, mkdir } = require("fs").promises
+const { writeFile, mkdir } = require("fs").promises
 const { join, resolve } = require("path")
 const { rollup } = require("rollup")
 const terser = require("terser")
@@ -11,12 +11,15 @@ async function build() {
   if (!existsSync(distNpmPath))
     await mkdir(distNpmPath)
   await makeBundle(join(__dirname, "compiled-esm", "direct-vuex.js"), "direct-vuex.esm", "esm")
-  await makeBundle(join(__dirname, "compiled-esm", "direct-vuex.js"), "direct-vuex.umd", "umd")
-  await makeBundle(join(__dirname, "compiled-esm", "direct-vuex.js"), "direct-vuex.system", "system")
+  await makeBundle(join(__dirname, "compiled-es5", "direct-vuex.js"), "direct-vuex.umd", "umd")
+  await makeBundle(join(__dirname, "compiled-es5", "direct-vuex.js"), "direct-vuex.system", "system")
 }
 
 async function makeBundle(mainFile, bundleName, format) {
-  const bundle = await rollup({ input: mainFile })
+  const bundle = await rollup({
+    input: mainFile,
+    context: "this" // preserve 'this' in TS's ES5 helpers
+  })
   const { output } = await bundle.generate({
     format,
     sourcemap: false,
@@ -25,7 +28,7 @@ async function makeBundle(mainFile, bundleName, format) {
       exports: "named"
     },
     globals: {
-      vuex: "Vuex"
+      vuex: "Vuex" // global variable name for UMD and System
     },
   })
   const bundleCode = output[0].code

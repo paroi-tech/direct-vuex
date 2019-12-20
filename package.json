@@ -1,20 +1,22 @@
 {
   "name": "direct-vuex",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "Use and implement your Vuex store with TypeScript types. Compatible with the Vue 3 composition API.",
   "author": "Paleo",
-  "files": ["dist", "types"],
+  "files": [
+    "dist",
+    "types"
+  ],
   "main": "dist/direct-vuex.umd.js",
   "module": "dist/direct-vuex.esm.js",
   "types": "types/index.d.ts",
   "scripts": {
     "prepublishOnly": "npm run build && npm run test",
-    "clear": "rimraf 'build/compiled-esm/*' 'build/compiled-umd/*'",
-    "tsc-umd": "tsc --module UMD --outDir build/compiled-umd",
+    "clear": "rimraf 'build/compiled-*/*'",
     "tsc": "tsc",
     "tsc:watch": "tsc --watch",
     "make-bundles": "node build/make-bundles.js",
-    "build": "npm run clear && npm run tsc && npm run tsc-umd && npm run make-bundles",
+    "build": "npm run clear && npm run tsc && npm run make-bundles",
     "lint": "tslint -p tsconfig.json -t verbose",
     "test": "jest",
     "test:watch": "jest --watch"
@@ -24,14 +26,15 @@
     "vuex": "*"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.23",
+    "@types/jest": "^24.0.24",
     "jest": "^24.9.0",
     "rimraf": "^3.0.0",
+    "rollup": "^1.27.13",
     "terser": "^4.4.3",
     "ts-jest": "^24.2.0",
     "tslint": "^5.20.1",
     "typescript": "^3.7.3",
-    "vue": "*",
+    "vue": "^2.6.11",
     "vuex": "^3.1.2"
   },
   "repository": {

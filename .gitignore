@@ -4,8 +4,7 @@
 node_modules
 .npmrc
 
-/build/compiled-esm
-/build/compiled-umd
+/build/compiled-*
 
 /dist
 

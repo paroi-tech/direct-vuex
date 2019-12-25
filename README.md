@@ -129,7 +129,7 @@ I'm not sure why but TypeScript doesn't infer the state type correctly when we w
 
 ## Implement a Vuex Store with typed helpers
 
-Direct-vuex provides several useful helpers for implementation of the store. They are all optional. However, if you want to keep your classic implementation of a Vuex Store, then direct-vuex needs to infer the literal type of the `namespaced` property. You can write `namespaced: true as true` or append `as const` where there is a `namespaced` property. But you don't need to worry about that if you use `createModule`.
+Direct-vuex provides several useful helpers for implementation of the store. They are all optional. However, if you want to keep your classic implementation of a Vuex Store, then direct-vuex needs to infer the literal type of the `namespaced` property. You can write `namespaced: true as true` where there is a `namespaced` property. But you don't need to worry about that if you use `createModule`.
 
 ### In a Vuex Module
 

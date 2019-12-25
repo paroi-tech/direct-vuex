@@ -12,7 +12,6 @@ async function build() {
     await mkdir(distNpmPath)
   await makeBundle(join(__dirname, "compiled-esm", "direct-vuex.js"), "direct-vuex.esm", "esm")
   await makeBundle(join(__dirname, "compiled-es5", "direct-vuex.js"), "direct-vuex.umd", "umd")
-  await makeBundle(join(__dirname, "compiled-es5", "direct-vuex.js"), "direct-vuex.system", "system")
 }
 
 async function makeBundle(mainFile, bundleName, format) {
@@ -22,11 +21,9 @@ async function makeBundle(mainFile, bundleName, format) {
   })
   const { output } = await bundle.generate({
     format,
+    name: "DirectVuex",
     sourcemap: false,
-    output: {
-      name: "direct-vuex",
-      exports: "named"
-    },
+    exports: "named",
     globals: {
       vuex: "Vuex" // global variable name for UMD and System
     },

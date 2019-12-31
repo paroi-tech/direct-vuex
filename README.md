@@ -240,6 +240,22 @@ export default createActions({
 })
 ```
 
+## Regarding the issue: _"Variable used before it's assigned"_
+
+This is an error from the linter. I suggest to disable the rule with a comment at the top of the source file.
+
+With TSLint:
+
+```js
+// tslint:disable: no-use-before-declare
+```
+
+With ESLint:
+
+```js
+/* eslint-disable no-use-before-define */
+```
+
 ## Contribute
 
 With VS Code, our recommanded plugin is:

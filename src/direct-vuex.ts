@@ -51,6 +51,10 @@ export function createActions<T>(actions: T & ActionsImpl): T {
   return actions
 }
 
+export default {
+  createDirectStore, createModule, createModules, createGetters, createMutations, createActions
+}
+
 // Getters
 
 const gettersCache = new WeakMap<Store<any>["getters"], any>()

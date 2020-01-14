@@ -17,7 +17,7 @@ async function build() {
 async function makeBundle(mainFile, bundleName, format) {
   const bundle = await rollup({
     input: mainFile,
-    context: "window" // preserve 'this' in TS's ES5 helpers
+    context: "this" // preserve 'this' in TS's ES5 helpers
   })
   const { output } = await bundle.generate({
     format,

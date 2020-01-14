@@ -4,10 +4,7 @@
     "target": "ES2015",
     "module": "ES2015",
     "sourceMap": false,
-    "lib": [
-      "esnext",
-      "dom"
-    ],
+    "lib": ["ES2015", "DOM"],
     "moduleResolution": "node",
     "esModuleInterop": true,
     "outDir": "build/compiled-esm",

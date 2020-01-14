@@ -78,7 +78,8 @@ function gettersFromOptions(
   if (options.getters)
     createDirectGetters(result, options.getters, originalGetters, hierarchy)
   if (options.modules) {
-    for (const [moduleName, moduleOptions] of Object.entries(options.modules)) {
+    for (const moduleName of Object.keys(options.modules)) {
+      const moduleOptions = options.modules[moduleName]
       if (moduleOptions.namespaced)
         result[moduleName] = gettersFromOptions({}, moduleOptions, originalGetters, [...hierarchy, moduleName])
       else
@@ -140,7 +141,8 @@ function commitFromOptions(
   if (options.mutations)
     createDirectMutations(result, options.mutations, originalCommitCall, hierarchy)
   if (options.modules) {
-    for (const [moduleName, moduleOptions] of Object.entries(options.modules)) {
+    for (const moduleName of Object.keys(options.modules)) {
+      const moduleOptions = options.modules[moduleName]
       if (moduleOptions.namespaced)
         result[moduleName] = commitFromOptions({}, moduleOptions, originalCommitCall, [...hierarchy, moduleName])
       else
@@ -197,7 +199,8 @@ function dispatchFromOptions(
   if (options.actions)
     createDirectActions(result, options.actions, originalDispatchCall, hierarchy)
   if (options.modules) {
-    for (const [moduleName, moduleOptions] of Object.entries(options.modules)) {
+    for (const moduleName of Object.keys(options.modules)) {
+      const moduleOptions = options.modules[moduleName]
       if (moduleOptions.namespaced)
         result[moduleName] = dispatchFromOptions({}, moduleOptions, originalDispatchCall, [...hierarchy, moduleName])
       else

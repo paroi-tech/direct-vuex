@@ -174,7 +174,7 @@ const mod1 = createModule({
 })
 
 export default mod1
-export const mod1ActionContext = (context: any) => moduleActionContext(context, mod1)
+const mod1ActionContext = (context: any) => moduleActionContext(context, mod1)
 ```
 
 Warning: Types in the context of actions implies that TypeScript should never infer the return type of an action from the context of the action. Indeed, this kind of typing would be recursive, since the context includes the return value of the action. When this happens, TypeScript passes the whole context to `any`. _Tl;dr; Declare the return type of actions where it exists!_
@@ -240,9 +240,28 @@ export default createActions({
 })
 ```
 
-## Regarding the issue: _"Variable used before it's assigned"_
+## About Direct-vuex and Circular Dependencies
 
-This is an error from the linter. I suggest to disable the rule with a comment at the top of the source file.
+When the helper `moduleActionContext` is used, linters may warn about an issue: _"Variable used before it's assigned"_. I couldn't avoid circular dependencies. Module action contexts need to be inferred at the store level, because they contain `rootState` etc.
+
+Here is an example of a Vuex module implementation:
+
+```ts
+const mod1 = {
+  actions: {
+    loadP1(context, payload: { id: string }) {
+      const { commit, rootState } = mod1ActionContext(context)
+      // …
+    }
+  }
+}
+export default mod1
+const mod1ActionContext = (context: any) => moduleActionContext(context, mod1)
+```
+
+It works because `mod1ActionContext` is not executed at the same time it is declared. It is executed when an action is executed, ie. after all the store and modules are already initialized.
+
+I suggest to disable the linter rule with a comment at the top of the source file.
 
 With TSLint:
 
@@ -255,6 +274,8 @@ With ESLint:
 ```js
 /* eslint-disable no-use-before-define */
 ```
+
+**Notice: A consequence of these circular dependencies is that _the main store file must be imported first_ from the rest of the application. If a Vuex module is imported first, some part of your implementation could be `undefined` at runtime.**
 
 ## Contribute
 

@@ -247,6 +247,8 @@ When the helper `moduleActionContext` is used, linters may warn about an issue: 
 Here is an example of a Vuex module implementation:
 
 ```ts
+import { moduleActionContext } from "./store"
+
 const mod1 = {
   actions: {
     loadP1(context, payload: { id: string }) {
@@ -255,6 +257,7 @@ const mod1 = {
     }
   }
 }
+
 export default mod1
 const mod1ActionContext = (context: any) => moduleActionContext(context, mod1)
 ```

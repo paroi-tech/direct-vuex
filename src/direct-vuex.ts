@@ -2,7 +2,7 @@ import Vuex, { ActionContext, Store } from "vuex"
 import { ActionsImpl, GettersImpl, ModuleOptions, ModulesImpl, MutationsImpl, StateOf, StoreOptions, StoreOrModuleOptions, WithOptionalState } from "../types"
 import { CreatedStore, ToDirectStore, VuexStore } from "../types/direct-types"
 
-export function createDirectStore<
+export function defineDirectStore<
   O extends WithOptionalState,
   S = StateOf<O>
 >(options: O & StoreOptions<S>): CreatedStore<O> {
@@ -28,31 +28,47 @@ export function createDirectStore<
   }
 }
 
-export function createModule<
+export function defineModule<
   O extends WithOptionalState,
   S = StateOf<O>
 >(options: O & ModuleOptions<S>): O {
   return options
 }
 
-export function createModules<S>(): (<T>(modules: T & ModulesImpl<S>) => T) {
+export function defineModules<S>(): (<T>(modules: T & ModulesImpl<S>) => T) {
   return modules => modules
 }
 
-export function createGetters<S>(): (<T>(getters: T & GettersImpl<S>) => T) {
+export function defineGetters<S>(): (<T>(getters: T & GettersImpl<S>) => T) {
   return getters => getters
 }
 
-export function createMutations<S>(): (<T>(mutations: T & MutationsImpl<S>) => T) {
+export function defineMutations<S>(): (<T>(mutations: T & MutationsImpl<S>) => T) {
   return mutations => mutations
 }
 
-export function createActions<T>(actions: T & ActionsImpl): T {
+export function defineActions<T>(actions: T & ActionsImpl): T {
   return actions
 }
 
+export const createDirectStore = obsolete(defineDirectStore, "createDirectStore", "defineDirectStore")
+export const createModule = obsolete(defineModule, "createModule", "defineModule")
+export const createModules = obsolete(defineModules, "createModules", "defineModules")
+export const createGetters = obsolete(defineGetters, "createGetters", "defineGetters")
+export const createMutations = obsolete(defineMutations, "createMutations", "defineMutations")
+export const createActions = obsolete(defineActions, "createActions", "defineActions")
+
+function obsolete<T extends (...args: any[]) => any>(fn: T, oldName: string, newName: string): T {
+  return ((...args) => {
+    // tslint:disable-next-line:no-console
+    console.warn(`Function '${oldName}' is obsolete, please use '${newName}'.`)
+    return fn(...args)
+  }) as T
+}
+
 export default {
-  createDirectStore, createModule, createModules, createGetters, createMutations, createActions
+  createDirectStore, createModule, createModules, createGetters, createMutations, createActions,
+  defineDirectStore, defineModule, defineModules, defineGetters, defineMutations, defineActions
 }
 
 // Getters

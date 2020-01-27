@@ -9,7 +9,7 @@
 
 Use and implement your Vuex store with TypeScript types. Direct-vuex doesn't require classes, therefore it is compatible with the Vue 3 composition API.
 
-**_Warning! BREAKING CHANGE in version 0.8: do not use `as const` with `createDirectStore`. Additionally, there is a new limitation on [how to declare a state](#a-limitation-on-how-to-declare-a-state). See also the section: [Implement a Vuex Store with typed helpers](#implement-a-vuex-store-with-typed-helpers)._**
+**_Warning! BREAKING CHANGE in version 0.8: do not use `as const` with `defineDirectStore`. Additionally, there is a new limitation on [how to declare a state](#a-limitation-on-how-to-declare-a-state). See also the section: [Implement a Vuex Store with typed helpers](#implement-a-vuex-store-with-typed-helpers)._**
 
 ## Install
 
@@ -28,11 +28,11 @@ Create the store:
 ```ts
 import Vue from "vue"
 import Vuex from "vuex"
-import { createDirectStore } from "direct-vuex"
+import { defineDirectStore } from "direct-vuex"
 
 Vue.use(Vuex)
 
-const { store, rootActionContext, moduleActionContext } = createDirectStore({
+const { store, rootActionContext, moduleActionContext } = defineDirectStore({
   // … store implementation here …
 })
 
@@ -129,25 +129,25 @@ I'm not sure why but TypeScript doesn't infer the state type correctly when we w
 
 ## Implement a Vuex Store with typed helpers
 
-Direct-vuex provides several useful helpers for implementation of the store. They are all optional. However, if you want to keep your classic implementation of a Vuex Store, then direct-vuex needs to infer the literal type of the `namespaced` property. You can write `namespaced: true as true` where there is a `namespaced` property. But you don't need to worry about that if you use `createModule`.
+Direct-vuex provides several useful helpers for implementation of the store. They are all optional. However, if you want to keep your classic implementation of a Vuex Store, then direct-vuex needs to infer the literal type of the `namespaced` property. You can write `namespaced: true as true` where there is a `namespaced` property. But you don't need to worry about that if you use `defineModule`.
 
 ### In a Vuex Module
 
-The function `createModule` is provided solely for type inference. It is a no-op behavior-wise. It expects a module implementation and returns the argument as-is. This behaviour is similar to (and inspired from) the [function `createComponent`](https://vue-composition-api-rfc.netlify.com/api.html#createcomponent) from the composition API.
+The function `defineModule` is provided solely for type inference. It is a no-op behavior-wise. It expects a module implementation and returns the argument as-is. This behaviour is similar to (and inspired from) the [function `defineComponent`](https://vue-composition-api-rfc.netlify.com/api.html#definecomponent) from the composition API.
 
 The generated function `moduleActionContext` is a factory for creating a function `mod1ActionContext`, which converts the injected action context to the direct-vuex one.
 
-Here is how to use `createModule` and `moduleActionContext`:
+Here is how to use `defineModule` and `moduleActionContext`:
 
 ```ts
-import { createModule } from "direct-vuex"
+import { defineModule } from "direct-vuex"
 import { moduleActionContext } from "./store"
 
 export interface Mod1State {
   p1: string
 }
 
-const mod1 = createModule({
+const mod1 = defineModule({
   state: (): Mod1State => {
     return {
       p1: ""
@@ -192,15 +192,15 @@ The generated function `rootActionContext` converts the injected action context 
   }
 ```
 
-### Use `createGetters`
+### Use `defineGetters`
 
-The function `createGetters` is provided solely for type inference. It is a no-op behavior-wise. It is a factory for a function, which expects the object of a `getters` property and returns the argument as-is.
+The function `defineGetters` is provided solely for type inference. It is a no-op behavior-wise. It is a factory for a function, which expects the object of a `getters` property and returns the argument as-is.
 
 ```ts
-import { createGetters } from "direct-vuex"
+import { defineGetters } from "direct-vuex"
 import { Mod1State } from "./mod1" // Import the local definition of the state (for example from the current module)
 
-export default createGetters<Mod1State>()({
+export default defineGetters<Mod1State>()({
   getter1(state) {
     // Here, the type of 'state' is 'Mod1State'.
   },
@@ -209,15 +209,15 @@ export default createGetters<Mod1State>()({
 
 Note: There is a limitation. The second parameters `getters` in a getter implementation, is not typed.
 
-### Use `createMutations`
+### Use `defineMutations`
 
-The function `createMutations` is provided solely for type inference. It is a no-op behavior-wise. It is a factory for a function, which expects the object of a `mutations` property and returns the argument as-is.
+The function `defineMutations` is provided solely for type inference. It is a no-op behavior-wise. It is a factory for a function, which expects the object of a `mutations` property and returns the argument as-is.
 
 ```ts
-import { createMutations } from "direct-vuex"
+import { defineMutations } from "direct-vuex"
 import { Mod1State } from "./mod1" // Import the local definition of the state (for example from the current module)
 
-export default createMutations<Mod1State>()({
+export default defineMutations<Mod1State>()({
   SET_P1(state, p1: string) {
     // Here, the type of 'state' is 'Mod1State'.
     state.p1 = p1
@@ -225,14 +225,14 @@ export default createMutations<Mod1State>()({
 })
 ```
 
-### Use `createActions`
+### Use `defineActions`
 
-The function `createActions` is provided solely for type inference. It is a no-op behavior-wise. It expects the object of an `actions` property and returns the argument as-is.
+The function `defineActions` is provided solely for type inference. It is a no-op behavior-wise. It expects the object of an `actions` property and returns the argument as-is.
 
 ```ts
-import { createActions } from "direct-vuex"
+import { defineActions } from "direct-vuex"
 
-export default createActions({
+export default defineActions({
   loadP1(context, payload: { id: string }) {
     const { dispatch, commit, getters, state } = mod1ActionContext(context)
     // Here, 'dispatch', 'commit', 'getters' and 'state' are typed.

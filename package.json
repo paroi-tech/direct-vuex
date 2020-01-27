@@ -1,6 +1,6 @@
 {
   "name": "direct-vuex",
-  "version": "0.9.9",
+  "version": "0.9.10",
   "description": "Use and implement your Vuex store with TypeScript types. Compatible with the Vue 3 composition API.",
   "author": "Paleo",
   "files": [
@@ -27,14 +27,14 @@
     "vuex": "*"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.24",
-    "jest": "^24.9.0",
+    "@types/jest": "^24.9.1",
+    "jest": "^25.1.0",
     "rimraf": "^3.0.0",
-    "rollup": "^1.27.13",
-    "terser": "^4.4.3",
-    "ts-jest": "^24.2.0",
-    "tslint": "^5.20.1",
-    "typescript": "^3.7.3",
+    "rollup": "^1.29.1",
+    "terser": "^4.6.3",
+    "ts-jest": "^25.0.0",
+    "tslint": "^6.0.0",
+    "typescript": "^3.7.5",
     "vue": "^2.6.11",
     "vuex": "^3.1.2"
   },

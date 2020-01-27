@@ -1,13 +1,13 @@
 import Vue from "vue"
 import Vuex from "vuex"
-import { defineDirectStore } from "../src/direct-vuex"
+import { createDirectStore } from "../src/direct-vuex"
 
 Vue.use(Vuex)
 
 describe("Namespaced Modules", () => {
 
   test("Access to namespaced action", async () => {
-    const { store } = defineDirectStore({
+    const { store } = createDirectStore({
       actions: {
         a1: async (context, payload: { p1: string }) => payload.p1
       },
@@ -29,7 +29,7 @@ describe("Namespaced Modules", () => {
   })
 
   test("Access to namespaced mutation", async () => {
-    const { store } = defineDirectStore({
+    const { store } = createDirectStore({
       mutations: {
         mu1: (state, payload: { p1: string }) => { }
       },
@@ -48,7 +48,7 @@ describe("Namespaced Modules", () => {
   })
 
   test("Access to namespaced getter", async () => {
-    const { store } = defineDirectStore({
+    const { store } = createDirectStore({
       getters: {
         g1: (state) => "abc"
       },
@@ -69,7 +69,7 @@ describe("Namespaced Modules", () => {
   })
 
   test("Access to namespaced getter with parameter", async () => {
-    const { store } = defineDirectStore({
+    const { store } = createDirectStore({
       getters: {
         hello: state => (name: string) => `Hello, ${name}!`
       },

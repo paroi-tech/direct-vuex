@@ -1,7 +1,7 @@
 import { ActionContext } from "vuex"
 import { CreatedStore } from "./direct-types"
 
-export function defineDirectStore<
+export function createDirectStore<
   O extends WithOptionalState,
   S = StateOf<O>
 >(options: O & StoreOptions<S>): CreatedStore<O>
@@ -16,14 +16,6 @@ export function defineGetters<S>(): (<T>(getters: T & GettersImpl<S>) => T)
 export function defineMutations<S>(): (<T>(mutations: T & MutationsImpl<S>) => T)
 export function defineActions<T>(actions: T & ActionsImpl): T
 
-
-/**
- * @deprecated Use `defineDirectStore`.
- */
-export function createDirectStore<
-  O extends WithOptionalState,
-  S = StateOf<O>
->(options: O & StoreOptions<S>): CreatedStore<O>
 
 /**
  * @deprecated Use `defineModule`.

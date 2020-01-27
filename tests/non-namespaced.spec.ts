@@ -1,13 +1,13 @@
 import Vue from "vue"
 import Vuex from "vuex"
-import { defineDirectStore } from "../src/direct-vuex"
+import { createDirectStore } from "../src/direct-vuex"
 
 Vue.use(Vuex)
 
 describe("Non-Namespaced Modules", () => {
 
   test("Merge module action in the root store", async () => {
-    const { store } = defineDirectStore({
+    const { store } = createDirectStore({
       actions: {
         a1: async (context: any, payload: { p1: string }) => payload.p1
       },
@@ -29,7 +29,7 @@ describe("Non-Namespaced Modules", () => {
   })
 
   test("Merge module action: omit the 'namespaced' property", async () => {
-    const { store } = defineDirectStore({
+    const { store } = createDirectStore({
       actions: {
         a1: async (context: any, payload: { p1: string }) => payload.p1
       },
@@ -50,7 +50,7 @@ describe("Non-Namespaced Modules", () => {
   })
 
   test("Merge module mutation in the root store", async () => {
-    const { store } = defineDirectStore({
+    const { store } = createDirectStore({
       mutations: {
         mu1: (state: any, payload: { p1: string }) => { }
       },
@@ -69,7 +69,7 @@ describe("Non-Namespaced Modules", () => {
   })
 
   test("Merge module getter in the root store", async () => {
-    const { store } = defineDirectStore({
+    const { store } = createDirectStore({
       getters: {
         g1: (state: any) => "abc"
       },

@@ -1,6 +1,6 @@
 import Vue from "vue"
 import Vuex from "vuex"
-import { defineDirectStore, defineModule } from "../src/direct-vuex"
+import { createDirectStore, defineModule } from "../src/direct-vuex"
 
 Vue.use(Vuex)
 
@@ -26,7 +26,7 @@ describe("Action Contexts", () => {
     })
     const mod1ActionContext = (context: any) => moduleActionContext(context, mod1)
 
-    const { store, rootActionContext, moduleActionContext } = defineDirectStore({
+    const { store, rootActionContext, moduleActionContext } = createDirectStore({
       actions: {
         async a1(context: any, payload: { p1: string }) {
           const { dispatch, rootDispatch } = rootActionContext(context)

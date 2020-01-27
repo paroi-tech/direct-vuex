@@ -1,6 +1,6 @@
 {
   "name": "direct-vuex",
-  "version": "0.9.10",
+  "version": "0.9.11",
   "description": "Use and implement your Vuex store with TypeScript types. Compatible with the Vue 3 composition API.",
   "author": "Paleo",
   "files": [

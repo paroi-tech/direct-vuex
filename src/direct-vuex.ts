@@ -2,7 +2,7 @@ import Vuex, { ActionContext, Store } from "vuex"
 import { ActionsImpl, GettersImpl, ModuleOptions, ModulesImpl, MutationsImpl, StateOf, StoreOptions, StoreOrModuleOptions, WithOptionalState } from "../types"
 import { CreatedStore, ToDirectStore, VuexStore } from "../types/direct-types"
 
-export function defineDirectStore<
+export function createDirectStore<
   O extends WithOptionalState,
   S = StateOf<O>
 >(options: O & StoreOptions<S>): CreatedStore<O> {
@@ -51,7 +51,6 @@ export function defineActions<T>(actions: T & ActionsImpl): T {
   return actions
 }
 
-export const createDirectStore = obsolete(defineDirectStore, "createDirectStore", "defineDirectStore")
 export const createModule = obsolete(defineModule, "createModule", "defineModule")
 export const createModules = obsolete(defineModules, "createModules", "defineModules")
 export const createGetters = obsolete(defineGetters, "createGetters", "defineGetters")
@@ -67,8 +66,8 @@ function obsolete<T extends (...args: any[]) => any>(fn: T, oldName: string, new
 }
 
 export default {
-  createDirectStore, createModule, createModules, createGetters, createMutations, createActions,
-  defineDirectStore, defineModule, defineModules, defineGetters, defineMutations, defineActions
+  createDirectStore, defineModule, defineModules, defineGetters, defineMutations, defineActions,
+  createModule, createModules, createGetters, createMutations, createActions
 }
 
 // Getters

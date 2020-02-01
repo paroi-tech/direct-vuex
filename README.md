@@ -214,8 +214,8 @@ The generated function `rootGetterContext` converts the injected action context 
 ```ts
   getters: {
     getterInTheRootStore(...args) {
-      const { state, getters, rootState, rootGetters } = rootGetterContext(args)
-      // Here, 'getters', 'state', 'rootGetters' and 'rootState' are typed.
+      const { state, getters } = rootGetterContext(args)
+      // Here, 'getters', 'state' are typed.
       // Without 'rootGetterContext' only 'state' would be typed.
     }
   }

@@ -26,10 +26,10 @@ export function createDirectStore<
     moduleActionContext:
       (originalContext: any, moduleOptions: any) => getModuleActionContext(originalContext, moduleOptions, options),
     rootGetterContext:
-      (state: any, getters: any) => getModuleGetterContext(state, getters, state, getters, options, options),
+      ([state, getters]: [any, any]) => getModuleGetterContext([state, getters, state, getters], options, options),
     moduleGetterContext:
-      (state: any, getters: any, rootState: any, rootGetters: any, moduleOptions: any) =>
-        getModuleGetterContext(state, getters, rootState, rootGetters, moduleOptions, options)
+      (args: [any, any, any, any], moduleOptions: any) =>
+        getModuleGetterContext(args, moduleOptions, options)
   }
 }
 
@@ -81,7 +81,7 @@ const gettersCache = new WeakMap<Store<any>["getters"], any>()
 
 function toDirectGetters(options: StoreOrModuleOptions, originalGetters: Store<any>["getters"]) {
   let getters = gettersCache.get(originalGetters)
-  // console.log(">> to-getters", getters ? "FROM_CACHE" : "CREATE", options);
+  // console.log(">> to-getters", getters ? "FROM_CACHE" : "CREATE", options)
   if (!getters) {
     getters = gettersFromOptions({}, options, originalGetters)
     gettersCache.set(originalGetters, getters)
@@ -131,7 +131,7 @@ const commitCache = new WeakMap<Store<any>["commit"], any>()
 
 function toDirectCommit(options: StoreOrModuleOptions, originalCommit: Store<any>["commit"]) {
   let commit = commitCache.get(originalCommit)
-  // console.log(">> to-commit", commit ? "FROM_CACHE" : "CREATE", options);
+  // console.log(">> to-commit", commit ? "FROM_CACHE" : "CREATE", options)
   if (!commit) {
     commit = commitFromOptions({}, options, originalCommit)
     commitCache.set(originalCommit, commit)
@@ -143,7 +143,7 @@ const rootCommitCache = new WeakMap<Store<any>["commit"], any>()
 
 function toDirectRootCommit(rootOptions: StoreOptions, originalCommit: Store<any>["commit"]) {
   let commit = rootCommitCache.get(originalCommit)
-  // console.log(">> to-rootCommit", commit ? "FROM_CACHE" : "CREATE", rootOptions);
+  // console.log(">> to-rootCommit", commit ? "FROM_CACHE" : "CREATE", rootOptions)
   if (!commit) {
     const origCall = (mutation: string, payload: any) => originalCommit(mutation, payload, { root: true })
     commit = commitFromOptions({}, rootOptions, origCall)
@@ -189,7 +189,7 @@ const dispatchCache = new WeakMap<Store<any>["dispatch"], any>()
 
 function toDirectDispatch(options: StoreOrModuleOptions, originalDispatch: Store<any>["dispatch"]) {
   let dispatch = dispatchCache.get(originalDispatch)
-  // console.log(">> to-dispatch", dispatch ? "FROM_CACHE" : "CREATE", options);
+  // console.log(">> to-dispatch", dispatch ? "FROM_CACHE" : "CREATE", options)
   if (!dispatch) {
     dispatch = dispatchFromOptions({}, options, originalDispatch)
     dispatchCache.set(originalDispatch, dispatch)
@@ -201,7 +201,7 @@ const rootDispatchCache = new WeakMap<Store<any>["dispatch"], any>()
 
 function toDirectRootDispatch(rootOptions: StoreOptions, originalDispatch: Store<any>["dispatch"]) {
   let dispatch = rootDispatchCache.get(originalDispatch)
-  // console.log(">> to-rootDispatch", dispatch ? "FROM_CACHE" : "CREATE", rootOptions);
+  // console.log(">> to-rootDispatch", dispatch ? "FROM_CACHE" : "CREATE", rootOptions)
   if (!dispatch) {
     const origCall = (mutation: string, payload: any) => originalDispatch(mutation, payload, { root: true })
     dispatch = dispatchFromOptions({}, rootOptions, origCall)
@@ -251,7 +251,7 @@ function getModuleActionContext(
   rootOptions: StoreOptions
 ): any {
   let context = actionContextCache.get(originalContext.state)
-  // console.log(">> to-actionContext", context ? "FROM_CACHE" : "CREATE", options);
+  // console.log(">> to-actionContext", context ? "FROM_CACHE" : "CREATE", options)
   if (!context) {
     context = {
       get rootState() {
@@ -289,9 +289,10 @@ function getModuleActionContext(
 
 const getterContextCache = new WeakMap<any, any>()
 
-function getModuleGetterContext(state: any, getters: any, rootState: any, rootGetters: any, options: ModuleOptions, rootOptions: StoreOptions) {
+function getModuleGetterContext(args: [any, any, any, any], options: ModuleOptions, rootOptions: StoreOptions) {
+  const [state, getters, rootState, rootGetters] = args
   let context = actionContextCache.get(state)
-  // console.log(">> to-getterContext", context ? "FROM_CACHE" : "CREATE", options);
+  // console.log(">> to-getterContext", context ? "FROM_CACHE" : "CREATE", options)
   if (!context) {
     context = {
       get rootState() {

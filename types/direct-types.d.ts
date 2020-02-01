@@ -4,18 +4,15 @@ import { ActionsImpl, GettersImpl, ModuleOptions, ModulesImpl, MutationsImpl, St
 export interface CreatedStore<R extends StoreOptions> {
   store: ToDirectStore<R>
 
-  rootActionContext: (originalContext: ActionContext<any, any>) => DirectActionContext<R, R>
+  rootActionContext(originalContext: ActionContext<any, any>): DirectActionContext<R, R>
   moduleActionContext<O extends ModuleOptions>(
     originalContext: ActionContext<any, any>,
     module: O
   ): DirectActionContext<R, O>
-  rootGetterContext: (
-    state: any,
-    getters: any
-  ) => DirectGetterContext<R, R>
-  moduleGetterContext: <O extends ModuleOptions>(
-    state: any, getters: any, rootState: any, rootGetters: any, module: O
-  ) => DirectGetterContext<R, O>
+  rootGetterContext(args: [any, any]): DirectGetterContext<R, R>
+  moduleGetterContext<O extends ModuleOptions>(
+    args: [any, any, any, any], module: O
+  ): DirectGetterContext<R, O>
 }
 
 export type ToDirectStore<O extends StoreOptions> = ShowContent<{

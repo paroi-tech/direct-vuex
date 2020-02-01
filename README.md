@@ -166,7 +166,7 @@ const mod1 = defineModule({
   }
   getters: {
     p1OrDefault(...args) {
-      const { state, getters, rootState, rootGetters } = mod1GetterContext(...args(state, ...args)
+      const { state, getters, rootState, rootGetters } = mod1GetterContext(...args)
       // Here, 'getters', 'state', 'rootGetters' and 'rootState' are typed.
       // Without 'mod1GetterContext' only 'state' would be typed.
       return state.p1 || "default"
@@ -188,7 +188,7 @@ const mod1 = defineModule({
 
 export default mod1
 const mod1ActionContext = (context: any) => moduleActionContext(context, mod1)
-const mod1GetterContext = (state: any, getters: any, rootState: any, rootGetters: any) => moduleGetterContext(state, getters, rootState, rootGetters, system)
+const mod1GetterContext = (...args: any[]) => moduleGetterContext(...args, mod1)
 ```
 
 Warning: Types in the context of actions implies that TypeScript should never infer the return type of an action from the context of the action. Indeed, this kind of typing would be recursive, since the context includes the return value of the action. When this happens, TypeScript passes the whole context to `any`. _Tl;dr; Declare the return type of actions where it exists!_
@@ -206,6 +206,20 @@ The generated function `rootActionContext` converts the injected action context 
   }
 ```
 
+### Get the typed context of a Vuex Getter, but in the root store
+
+The generated function `rootGetterContext` converts the injected action context to the direct-vuex one, at the root level (not in a module).
+
+```ts
+  getters: {
+    getterInTheRootStore(...args) {
+      const { state, getters, rootState, rootGetters } = rootGetterContext(...args)
+      // Here, 'getters', 'state', 'rootGetters' and 'rootState' are typed.
+      // Without 'rootGetterContext' only 'state' would be typed.
+    }
+  }
+```
+
 ### Use `defineGetters`
 
 The function `defineGetters` is provided solely for type inference. It is a no-op behavior-wise. It is a factory for a function, which expects the object of a `getters` property and returns the argument as-is.
@@ -216,7 +230,7 @@ import { Mod1State } from "./mod1" // Import the local definition of the state (
 
 export default defineGetters<Mod1State>()({
   getter1(state) {
-    const { state, getters, rootState, rootGetters } = mod1GetterContext(...args(state, ...args)
+    const { state, getters, rootState, rootGetters } = mod1GetterContext(...args)
     // Here, 'getters', 'state', 'rootGetters' and 'rootState' are typed.
     // Without 'mod1GetterContext' only 'state' would be typed.
   },
@@ -258,7 +272,7 @@ export default defineActions({
 
 ## About Direct-vuex and Circular Dependencies
 
-When the helper `moduleActionContext` is used, linters may warn about an issue: _"Variable used before it's assigned"_. I couldn't avoid circular dependencies. Module action contexts need to be inferred at the store level, because they contain `rootState` etc.
+When the helper `moduleActionContext` and `moduleGetterContext` are used, linters may warn about an issue: _"Variable used before it's assigned"_. I couldn't avoid circular dependencies. Action contexts and getter contexts need to be inferred at the store level, because they contain `rootState` etc.
 
 Here is an example of a Vuex module implementation:
 
@@ -282,10 +296,10 @@ const mod1 = {
 
 export default mod1
 const mod1ActionContext = (context: any) => moduleActionContext(context, mod1)
-const mod1GetterContext = (state: any, getters: any, rootState: any, rootGetters: any) => moduleGetterContext(state, getters, rootState, rootGetters, system)
+const mod1GetterContext = (...args: any[]) => moduleGetterContext(...args, mod1)
 ```
 
-It works because `mod1ActionContext` is not executed at the same time it is declared. It is executed when an action is executed, ie. after all the store and modules are already initialized.
+It works because `mod1ActionContext` (or `mod1GetterContext`) is not executed at the same time it is declared. It is executed when an action (or a getter) is executed, ie. after all the store and modules are already initialized.
 
 I suggest to disable the linter rule with a comment at the top of the source file.
 

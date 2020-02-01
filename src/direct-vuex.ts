@@ -25,10 +25,11 @@ export function createDirectStore<
     rootActionContext: (originalContext: any) => getModuleActionContext(originalContext, options, options),
     moduleActionContext:
       (originalContext: any, moduleOptions: any) => getModuleActionContext(originalContext, moduleOptions, options),
-    rootGetterContext: (state, getters) => getModuleGetterContext(state, getters, state, getters, options, options),
+    rootGetterContext:
+      (state: any, getters: any) => getModuleGetterContext(state, getters, state, getters, options, options),
     moduleGetterContext:
-      (state, getters, rootState, rootGetters, moduleOptions: any) =>
-      getModuleGetterContext(state, getters, rootState, rootGetters, moduleOptions, options)
+      (state: any, getters: any, rootState: any, rootGetters: any, moduleOptions: any) =>
+        getModuleGetterContext(state, getters, rootState, rootGetters, moduleOptions, options)
   }
 }
 
@@ -284,13 +285,13 @@ function getModuleActionContext(
   return context
 }
 
-// ModuleContext
+// GetterContext
 
 const getterContextCache = new WeakMap<any, any>()
 
 function getModuleGetterContext(state: any, getters: any, rootState: any, rootGetters: any, options: ModuleOptions, rootOptions: StoreOptions) {
   let context = actionContextCache.get(state)
-  // console.log(">> to-actionContext", context ? "FROM_CACHE" : "CREATE", options);
+  // console.log(">> to-getterContext", context ? "FROM_CACHE" : "CREATE", options);
   if (!context) {
     context = {
       get rootState() {
@@ -306,8 +307,8 @@ function getModuleGetterContext(state: any, getters: any, rootState: any, rootGe
         return toDirectGetters(options, getters)
       }
     }
-  if (state) // Can be undefined in unit tests
-    getterContextCache.set(state, context)
+    if (state) // Can be undefined in unit tests
+      getterContextCache.set(state, context)
   }
 
   return context

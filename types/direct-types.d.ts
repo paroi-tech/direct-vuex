@@ -9,6 +9,13 @@ export interface CreatedStore<R extends StoreOptions> {
     originalContext: ActionContext<any, any>,
     module: O
   ): DirectActionContext<R, O>
+  rootGetterContext: (
+    state: any,
+    getters: any
+  ) => DirectGetterContext<R, R>
+  moduleGetterContext: <O extends ModuleOptions>(
+    state: any, getters: any, rootState: any, rootGetters: any, module: O
+  ) => DirectGetterContext<R, O>
 }
 
 export type ToDirectStore<O extends StoreOptions> = ShowContent<{
@@ -106,6 +113,13 @@ export type DirectActionContext<R, O> = ShowContent<{
   getters: DirectGetters<O>
   commit: DirectMutations<O>
   dispatch: DirectActions<O>
+}>
+
+export type DirectGetterContext<R, O> = ShowContent<{
+  rootState: DirectState<R>
+  rootGetters: DirectGetters<R>
+  state: DirectState<O>
+  getters: DirectGetters<O>
 }>
 
 // Common helpers

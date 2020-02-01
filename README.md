@@ -32,7 +32,13 @@ import { createDirectStore } from "direct-vuex"
 
 Vue.use(Vuex)
 
-const { store, rootActionContext, moduleActionContext } = createDirectStore({
+const {
+  store,
+  rootActionContext,
+  moduleActionContext,
+  rootGetterContext,
+  moduleGetterContext
+} = createDirectStore({
   // … store implementation here …
 })
 
@@ -40,8 +46,13 @@ const { store, rootActionContext, moduleActionContext } = createDirectStore({
 export default store
 
 // The following exports will be used to enable types in the
-// implementation of actions.
-export { rootActionContext, moduleActionContext }
+// implementation of actions and getters.
+export {
+  rootActionContext,
+  moduleActionContext,
+  rootGetterContext,
+  moduleGetterContext
+}
 
 // The following lines enable types in the injected store '$store'.
 export type AppStore = typeof store
@@ -154,8 +165,10 @@ const mod1 = defineModule({
     }
   }
   getters: {
-    p1OrDefault(state) {
-      // Here, the type of 'state' is 'Mod1State'.
+    p1OrDefault(...args) {
+      const { state, getters, rootState, rootGetters } = mod1GetterContext(...args(state, ...args)
+      // Here, 'getters', 'state', 'rootGetters' and 'rootState' are typed.
+      // Without 'mod1GetterContext' only 'state' would be typed.
       return state.p1 || "default"
     }
   },
@@ -175,6 +188,7 @@ const mod1 = defineModule({
 
 export default mod1
 const mod1ActionContext = (context: any) => moduleActionContext(context, mod1)
+const mod1GetterContext = (state: any, getters: any, rootState: any, rootGetters: any) => moduleGetterContext(state, getters, rootState, rootGetters, system)
 ```
 
 Warning: Types in the context of actions implies that TypeScript should never infer the return type of an action from the context of the action. Indeed, this kind of typing would be recursive, since the context includes the return value of the action. When this happens, TypeScript passes the whole context to `any`. _Tl;dr; Declare the return type of actions where it exists!_
@@ -202,7 +216,9 @@ import { Mod1State } from "./mod1" // Import the local definition of the state (
 
 export default defineGetters<Mod1State>()({
   getter1(state) {
-    // Here, the type of 'state' is 'Mod1State'.
+    const { state, getters, rootState, rootGetters } = mod1GetterContext(...args(state, ...args)
+    // Here, 'getters', 'state', 'rootGetters' and 'rootState' are typed.
+    // Without 'mod1GetterContext' only 'state' would be typed.
   },
 })
 ```
@@ -250,6 +266,12 @@ Here is an example of a Vuex module implementation:
 import { moduleActionContext } from "./store"
 
 const mod1 = {
+  getters: {
+    p1OrDefault(...args) {
+      const { state, getters, rootState, rootGetters } = mod1GetterContext(...args(state, ...args)
+      // …
+    }
+  },
   actions: {
     loadP1(context, payload: { id: string }) {
       const { commit, rootState } = mod1ActionContext(context)
@@ -260,6 +282,7 @@ const mod1 = {
 
 export default mod1
 const mod1ActionContext = (context: any) => moduleActionContext(context, mod1)
+const mod1GetterContext = (state: any, getters: any, rootState: any, rootGetters: any) => moduleGetterContext(state, getters, rootState, rootGetters, system)
 ```
 
 It works because `mod1ActionContext` is not executed at the same time it is declared. It is executed when an action is executed, ie. after all the store and modules are already initialized.

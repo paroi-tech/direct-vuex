@@ -144,9 +144,9 @@ Direct-vuex provides several useful helpers for implementation of the store. The
 
 The function `defineModule` is provided solely for type inference. It is a no-op behavior-wise. It expects a module implementation and returns the argument as-is. This behaviour is similar to (and inspired from) the [function `defineComponent`](https://vue-composition-api-rfc.netlify.com/api.html#definecomponent) from the composition API.
 
-The generated function `moduleActionContext` is a factory for creating a function `mod1ActionContext`, which converts the injected action context to the direct-vuex one.
+The generated functions `moduleActionContext` and `moduleGetterContext` are factories for creating functions `mod1ActionContext` and `mod1GetterContext`, which converts injected action and getter contexts to their direct-vuex equivalent.
 
-Here is how to use `defineModule` and `moduleActionContext`:
+Here is how to use `defineModule`, `moduleActionContext` and `moduleGetterContext`:
 
 ```ts
 import { defineModule } from "direct-vuex"

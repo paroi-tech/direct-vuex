@@ -1,5 +1,5 @@
 import { ActionContext } from "vuex"
-import { CreatedStore } from "./direct-types"
+import { CreatedStore, DirectActionContext, DirectGetterContext } from "./direct-types"
 
 export function createDirectStore<
   O extends WithOptionalState,
@@ -16,6 +16,14 @@ export function defineGetters<S>(): (<T>(getters: T & GettersImpl<S>) => T)
 export function defineMutations<S>(): (<T>(mutations: T & MutationsImpl<S>) => T)
 export function defineActions<T>(actions: T & ActionsImpl): T
 
+export function localGetterContext<O extends StoreOrModuleOptions>(
+  args: [any, any, ...any[]], options: O
+): DirectGetterContext<never, O>
+
+export function localActionContext<O extends StoreOrModuleOptions>(
+  originalContext: ActionContext<any, any>,
+  options: O
+): DirectActionContext<never, O>
 
 /**
  * @deprecated Use `defineModule`.

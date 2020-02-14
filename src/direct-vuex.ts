@@ -22,15 +22,28 @@ export function createDirectStore<
 
   return {
     store,
-    rootActionContext: (originalContext: any) => getModuleActionContext(originalContext, options, options),
-    moduleActionContext:
-      (originalContext: any, moduleOptions: any) => getModuleActionContext(originalContext, moduleOptions, options),
     rootGetterContext:
       ([state, getters]: [any, any]) => getModuleGetterContext([state, getters, state, getters], options, options),
     moduleGetterContext:
       (args: [any, any, any, any], moduleOptions: any) =>
-        getModuleGetterContext(args, moduleOptions, options)
+        getModuleGetterContext(args, moduleOptions, options),
+    rootActionContext: (originalContext: any) => getModuleActionContext(originalContext, options, options),
+    moduleActionContext:
+      (originalContext: any, moduleOptions: any) => getModuleActionContext(originalContext, moduleOptions, options),
   }
+}
+
+export function localGetterContext<O extends StoreOrModuleOptions>(
+  [state, getters]: [any, any, ...any[]], options: O
+): any {
+  return getModuleGetterContext([state, getters, undefined, undefined], options)
+}
+
+export function localActionContext<O extends StoreOrModuleOptions>(
+  originalContext: ActionContext<any, any>,
+  options: O
+): any {
+  return getModuleActionContext(originalContext, options)
 }
 
 export function defineModule<
@@ -241,6 +254,47 @@ function createDirectActions(
     result[name] = (payload?: any) => originalDispatchCall(`${prefix}${name}`, payload)
 }
 
+// GetterContext
+
+const getterContextCache = new WeakMap<any, any>()
+
+function getModuleGetterContext(args: [any, any, any, any], options: ModuleOptions, rootOptions?: StoreOptions) {
+  const [state, getters, rootState, rootGetters] = args
+  let context = actionContextCache.get(state)
+  // console.log(">> to-getterContext", context ? "FROM_CACHE" : "CREATE", options)
+  if (!context) {
+    if (rootOptions) {
+      context = {
+        get rootState() {
+          return rootState
+        },
+        get rootGetters() {
+          return toDirectGetters(rootOptions!, rootGetters)
+        },
+        get state() {
+          return state
+        },
+        get getters() {
+          return toDirectGetters(options, getters)
+        }
+      }
+    } else {
+      context = {
+        get state() {
+          return state
+        },
+        get getters() {
+          return toDirectGetters(options, getters)
+        }
+      }
+    }
+    if (state) // Can be undefined in unit tests
+      getterContextCache.set(state, context)
+  }
+
+  return context
+}
+
 // ActionContext
 
 const actionContextCache = new WeakMap<any, any>()
@@ -248,69 +302,56 @@ const actionContextCache = new WeakMap<any, any>()
 function getModuleActionContext(
   originalContext: ActionContext<any, any>,
   options: ModuleOptions,
-  rootOptions: StoreOptions
+  rootOptions?: StoreOptions
 ): any {
   let context = actionContextCache.get(originalContext.state)
   // console.log(">> to-actionContext", context ? "FROM_CACHE" : "CREATE", options)
   if (!context) {
-    context = {
-      get rootState() {
-        return originalContext.rootState
-      },
-      get rootGetters() {
-        return toDirectGetters(rootOptions, originalContext.rootGetters)
-      },
-      get rootCommit() {
-        return toDirectRootCommit(rootOptions, originalContext.commit)
-      },
-      get rootDispatch() {
-        return toDirectRootDispatch(rootOptions, originalContext.dispatch)
-      },
-      get state() {
-        return originalContext.state
-      },
-      get getters() {
-        return toDirectGetters(options, originalContext.getters)
-      },
-      get commit() {
-        return toDirectCommit(options, originalContext.commit)
-      },
-      get dispatch() {
-        return toDirectDispatch(options, originalContext.dispatch)
+    if (rootOptions) {
+      context = {
+        get rootState() {
+          return originalContext.rootState
+        },
+        get rootGetters() {
+          return toDirectGetters(rootOptions!, originalContext.rootGetters)
+        },
+        get rootCommit() {
+          return toDirectRootCommit(rootOptions!, originalContext.commit)
+        },
+        get rootDispatch() {
+          return toDirectRootDispatch(rootOptions!, originalContext.dispatch)
+        },
+        get state() {
+          return originalContext.state
+        },
+        get getters() {
+          return toDirectGetters(options, originalContext.getters)
+        },
+        get commit() {
+          return toDirectCommit(options, originalContext.commit)
+        },
+        get dispatch() {
+          return toDirectDispatch(options, originalContext.dispatch)
+        }
+      }
+    } else {
+      context = {
+        get state() {
+          return originalContext.state
+        },
+        get getters() {
+          return toDirectGetters(options, originalContext.getters)
+        },
+        get commit() {
+          return toDirectCommit(options, originalContext.commit)
+        },
+        get dispatch() {
+          return toDirectDispatch(options, originalContext.dispatch)
+        }
       }
     }
     if (originalContext.state) // Can be undefined in unit tests
       actionContextCache.set(originalContext.state, context)
   }
-  return context
-}
-
-// GetterContext
-
-const getterContextCache = new WeakMap<any, any>()
-
-function getModuleGetterContext(args: [any, any, any, any], options: ModuleOptions, rootOptions: StoreOptions) {
-  const [state, getters, rootState, rootGetters] = args
-  let context = actionContextCache.get(state)
-  // console.log(">> to-getterContext", context ? "FROM_CACHE" : "CREATE", options)
-  if (!context) {
-    context = {
-      get rootState() {
-        return rootState
-      },
-      get rootGetters() {
-        return toDirectGetters(rootOptions, rootGetters)
-      },
-      get state() {
-        return state
-      },
-      get getters() {
-        return toDirectGetters(options, getters)
-      }
-    }
-    if (state) // Can be undefined in unit tests
-      getterContextCache.set(state, context)
-  }
-
   return context
 }

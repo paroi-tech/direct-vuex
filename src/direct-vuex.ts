@@ -85,6 +85,7 @@ function obsolete<T extends (...args: any[]) => any>(fn: T, oldName: string, new
 
 export default {
   createDirectStore, defineModule, defineModules, defineGetters, defineMutations, defineActions,
+  localGetterContext, localActionContext,
   createModule, createModules, createGetters, createMutations, createActions
 }
 

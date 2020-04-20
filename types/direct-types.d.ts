@@ -72,9 +72,11 @@ type GetMutationsInModules<I extends ModulesImpl> = {
 }
 
 type ToDirectMutations<T extends MutationsImpl> = {
-  [K in keyof T]: Parameters<T[K]>[1] extends undefined
-  ? (() => void)
-  : ((payload: Parameters<T[K]>[1]) => void)
+    [K in keyof T]: Parameters<T[K]>[1] extends undefined
+    ? (() => void)
+    : (Extract<Parameters<T[K]>[1], undefined> extends never ? 
+        ((payload: Parameters<T[K]>[1]) => PromiseOf<ReturnType<T[K]>>) :
+        ((payload?: Parameters<T[K]>[1]) => PromiseOf<ReturnType<T[K]>>))
 }
 
 type MergeMutationsFromModules<I extends ModulesImpl> =
@@ -92,9 +94,11 @@ type GetActionsInModules<I extends ModulesImpl> = {
 }
 
 type ToDirectActions<T extends ActionsImpl> = {
-  [K in keyof T]: Parameters<T[K]>[1] extends undefined
-  ? (() => PromiseOf<ReturnType<T[K]>>)
-  : ((payload: Parameters<T[K]>[1]) => PromiseOf<ReturnType<T[K]>>)
+    [K in keyof T]: Parameters<T[K]>[1] extends undefined
+    ? (() => PromiseOf<ReturnType<T[K]>>)
+    : (Extract<Parameters<T[K]>[1], undefined> extends never ? 
+        ((payload: Parameters<T[K]>[1]) => PromiseOf<ReturnType<T[K]>>) :
+        ((payload?: Parameters<T[K]>[1]) => PromiseOf<ReturnType<T[K]>>))
 }
 
 type MergeActionsFromModules<I extends ModulesImpl> =

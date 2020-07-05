@@ -35,10 +35,10 @@ type DirectState<O extends StoreOrModuleOptions> =
   & GetStateInModules<OrEmpty<O["modules"]>>
 
 type GetStateInModules<I extends ModulesImpl> = {
-  [M in keyof I]: DirectState<I[M]>
+  readonly [M in keyof I]: DirectState<I[M]>
 }
 
-type ToStateObj<T> = T extends (() => any) ? ReturnType<T> : T
+type ToStateObj<T> = T extends (() => any) ? Readonly<ReturnType<T>> : Readonly<T>
 
 // Getters
 

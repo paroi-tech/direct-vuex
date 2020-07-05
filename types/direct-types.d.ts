@@ -50,12 +50,17 @@ type DirectGetters<O extends StoreOrModuleOptions> =
   & MergeGettersFromModules<FilterNotNamespaced<OrEmpty<O["modules"]>>>
 
 type GetGettersInModules<I extends ModulesImpl> = {
-  [M in keyof I]: DirectGetters<I[M]>
+  readonly [M in keyof I]: DirectGetters<I[M]>
 }
 
 type ToDirectGetters<T extends GettersImpl> = {
-  [K in keyof T]: ReturnType<T[K]>
+  readonly [K in keyof T]: ToReadonlyReturnType<T[K]>
 }
+
+type ToReadonlyReturnType<T extends (...args: any) => any> =
+  T extends ((...args1: any) => (...args2: any) => any)
+  ? ReturnType<T>
+  : Readonly<ReturnType<T>>
 
 type MergeGettersFromModules<I extends ModulesImpl> =
   UnionToIntersection<ToDirectGetters<OrEmpty<I[keyof I]["getters"]>>>

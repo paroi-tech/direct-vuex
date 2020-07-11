@@ -54,10 +54,10 @@ type GetGettersInModules<I extends ModulesImpl> = {
 }
 
 type ToDirectGetters<T extends GettersImpl> = {
-  readonly [K in keyof T]: ToReadonlyReturnType<T[K]>
+  readonly [K in keyof T]: ReadonlyReturnTypeExceptCb<T[K]>
 }
 
-type ToReadonlyReturnType<T extends (...args: any) => any> =
+type ReadonlyReturnTypeExceptCb<T extends (...args: any) => any> =
   T extends ((...args1: any) => (...args2: any) => any)
   ? ReturnType<T>
   : Readonly<ReturnType<T>>
@@ -77,11 +77,11 @@ type GetMutationsInModules<I extends ModulesImpl> = {
 }
 
 type ToDirectMutations<T extends MutationsImpl> = {
-    [K in keyof T]: Parameters<T[K]>[1] extends undefined
-    ? (() => void)
-    : (Extract<Parameters<T[K]>[1], undefined> extends never ? 
-        ((payload: Parameters<T[K]>[1]) => void) :
-        ((payload?: Parameters<T[K]>[1]) => void))
+  [K in keyof T]: Parameters<T[K]>[1] extends undefined
+  ? (() => void)
+  : (Extract<Parameters<T[K]>[1], undefined> extends never ?
+    ((payload: Parameters<T[K]>[1]) => void) :
+    ((payload?: Parameters<T[K]>[1]) => void))
 }
 
 type MergeMutationsFromModules<I extends ModulesImpl> =
@@ -99,11 +99,11 @@ type GetActionsInModules<I extends ModulesImpl> = {
 }
 
 type ToDirectActions<T extends ActionsImpl> = {
-    [K in keyof T]: Parameters<T[K]>[1] extends undefined
-    ? (() => PromiseOf<ReturnType<T[K]>>)
-    : (Extract<Parameters<T[K]>[1], undefined> extends never ? 
-        ((payload: Parameters<T[K]>[1]) => PromiseOf<ReturnType<T[K]>>) :
-        ((payload?: Parameters<T[K]>[1]) => PromiseOf<ReturnType<T[K]>>))
+  [K in keyof T]: Parameters<T[K]>[1] extends undefined
+  ? (() => PromiseOf<ReturnType<T[K]>>)
+  : (Extract<Parameters<T[K]>[1], undefined> extends never ?
+    ((payload: Parameters<T[K]>[1]) => PromiseOf<ReturnType<T[K]>>) :
+    ((payload?: Parameters<T[K]>[1]) => PromiseOf<ReturnType<T[K]>>))
 }
 
 type MergeActionsFromModules<I extends ModulesImpl> =

@@ -12,6 +12,7 @@
   "types": "types/index.d.ts",
   "scripts": {
     "prepublishOnly": "npm run build && npm run test",
+    "prepare": "npm run build",
     "clear": "rimraf 'build/compiled-*/*'",
     "tsc": "tsc",
     "tsc-es5": "tsc --target ES5 --outDir build/compiled-es5",

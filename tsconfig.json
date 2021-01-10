@@ -4,7 +4,7 @@
     "target": "ES2015",
     "module": "ES2015",
     "sourceMap": false,
-    "lib": ["ES2015", "DOM"],
+    "lib": ["es2020", "DOM"],
     "moduleResolution": "node",
     "esModuleInterop": true,
     "outDir": "build/compiled-esm",

@@ -1,8 +1,4 @@
-import Vue from "vue"
-import Vuex from "vuex"
 import { createDirectStore, defineModule } from "../src/direct-vuex"
-
-Vue.use(Vuex)
 
 describe("Action Contexts", () => {
 

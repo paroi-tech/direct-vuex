@@ -160,9 +160,9 @@ const mod1 = defineModule({
     return {
       p1: ""
     }
-  }
+  },
   getters: {
-    p1OrDefault(...args) {
+    p1OrDefault(...args): string {
       const { state, getters, rootState, rootGetters } = mod1GetterContext(args)
       // Here, 'getters', 'state', 'rootGetters' and 'rootState' are typed.
       // Without 'mod1GetterContext' only 'state' would be typed.

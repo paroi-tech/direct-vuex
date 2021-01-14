@@ -1,4 +1,4 @@
-import Vuex, { ActionContext, Store } from "vuex"
+import { ActionContext, createStore, Store } from "vuex"
 import { ActionsImpl, GettersImpl, ModuleOptions, ModulesImpl, MutationsImpl, StateOf, StoreOptions, StoreOrModuleOptions, WithOptionalState } from "../types"
 import { CreatedStore, ToDirectStore, VuexStore } from "../types/direct-types"
 
@@ -6,7 +6,7 @@ export function createDirectStore<
   O extends WithOptionalState,
   S = StateOf<O>
 >(options: O & StoreOptions<S>): CreatedStore<O> {
-  const original = new Vuex.Store(options as any) as VuexStore<O>
+  const original = createStore(options as any) as VuexStore<O>
 
   const store: ToDirectStore<O> = {
     get state() {

@@ -10,13 +10,13 @@ Use and implement your Vuex store with TypeScript types. Direct-vuex doesn't req
 
 ## Install
 
-First, add `direct-vuex` to a Vue 2 application:
+First, add `direct-vuex` to a **Vue 2** application:
 
 ```sh
 npm install direct-vuex
 ```
 
-Or in a Vue 3 application:
+Or, in a **Vue 3** application:
 
 ```sh
 npm install direct-vuex@next
